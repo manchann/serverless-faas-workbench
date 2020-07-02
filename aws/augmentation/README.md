@@ -1,0 +1,1 @@
+# Augmentation with Python Pillow
