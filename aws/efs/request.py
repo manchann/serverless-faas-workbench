@@ -1,7 +1,3 @@
-import boto3
-import json
-from threading import Thread
-import os
 import subprocess
 
 
@@ -10,9 +6,7 @@ import subprocess
 bs, count = input('Enter the bs & count')
 
 def requester(bs, count):
-    
-    subprocess.check_call(
-        "\curl 'https://2bs4iii4rd.execute-api.ap-northeast-2.amazonaws.com/lambda-test/total/?bs=%22'{}'%22&count=%22'{}'%22#'".format(
+    subprocess.check_call("\curl 'https://2bs4iii4rd.execute-api.ap-northeast-2.amazonaws.com/lambda-test/total/?bs=%22'{}'%22&count=%22'{}'%22#'".format(
             bs, count),
         shell=True)
 
