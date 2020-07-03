@@ -33,5 +33,5 @@ def lambda_handler(event, context):
     with open(mnt_test + 'io_write_logs') as logs:
         result = str(logs.readlines()[2]).replace('\n', '')
         end = time.time()
-        print('test_time',end - start)
+        print('test',end - start)
         return result
