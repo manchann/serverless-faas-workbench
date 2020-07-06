@@ -1,9 +1,5 @@
 import subprocess
-
-# loop_count = input("Enter the count")
-
-bs = input('Enter the bs: ')
-count = input('Enter the count: ')
+import time
 
 
 def requester(bs, count):
@@ -17,14 +13,9 @@ def requester(bs, count):
         shell=True)
 
 
-threads = []
-requester(bs, count)
+test_set = [
+    {'bs': '1', 'count': '1'}
+]
 
-# while(loop_count):
-#     t = Thread(target=requester, args=(bs, count))
-#     t.start()
-#     threads.append(t)
-#     loop_count -=1
-
-# for t in threads:
-#     t.join()
+for obj in test_set:
+    requester(obj['bs'], obj['count'])

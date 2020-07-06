@@ -1,5 +1,8 @@
 import subprocess
 import time
+import boto3
+import decimal
+
 tmp = '/tmp/'
 mnt_test = '/mnt/test/'
 
@@ -21,17 +24,32 @@ Options
 
 def lambda_handler(event, context):
     start = time.time()
-    bs = 'bs='+event['bs']
-    count = 'count='+event['count']
+    bs = 'bs=' + event['bs']
+    count = 'count=' + event['count']
 
     out_fd = open(tmp + 'io_write_logs', 'w')
     dd = subprocess.Popen(['dd', 'if=/dev/zero', 'of=/tmp/out', bs, count], stderr=out_fd)
     dd.communicate()
-    
+
     subprocess.check_output(['ls', '-alh', tmp])
 
     with open(tmp + 'io_write_logs') as logs:
         result = str(logs.readlines()[2]).replace('\n', '')
         end = time.time()
-        print('test',end - start)
+        print('test', end - start)
+        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
+        table = dynamodb.Table('EFS')
+        response = table.put_item(
+            Item={
+                'id': decimal.Decimal(time.time()),
+                'type': 'local',
+                'details': {
+                    'start_time': decimal.Decimal(start),
+                    'end_time': decimal.Decimal(end),
+                    'latency': decimal.Decimal(end - start),
+                    'count': event['count'],
+                    'bs': event['bs']
+                }
+            }
+        )
         return result
