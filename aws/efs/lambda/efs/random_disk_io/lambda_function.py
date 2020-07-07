@@ -34,7 +34,7 @@ def lambda_handler(event, context):
     disk_write_latency = time() - start
     disk_write_bandwidth = file_size / disk_write_latency
 
-    output = subprocess.check_output(['ls', '-alh', '/tmp/'])
+    output = subprocess.check_output(['ls', '-alh', mnt_test])
     print(output)
 
     start = time()
