@@ -22,39 +22,52 @@ Options
 """
 
 
-def req_dynamoDB(table_name, item):
-    dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
-    table = dynamodb.Table(table_name)
-    response = table.put_item(
-        Item=item
-    )
-
-
 def lambda_handler(event, context):
-    start = time.time()
-    bs = 'bs=' + event['bs']
-    count = 'count=' + event['count']
+    try:
+        start = time.time()
+        bs = 'bs=' + event['bs']
+        count = 'count=' + event['count']
 
-    out_fd = open(mnt_test + 'io_write_logs', 'w')
-    dd = subprocess.Popen(['dd', 'if=/dev/zero', 'of=/mnt/test/out', bs, count], stderr=out_fd)
-    dd.communicate()
+        out_fd = open(mnt_test + 'io_write_logs', 'w')
+        dd = subprocess.Popen(['dd', 'if=/dev/zero', 'of=/mnt/test/out', bs, count], stderr=out_fd)
+        dd.communicate()
 
-    subprocess.check_output(['ls', '-alh', mnt_test])
+        subprocess.check_output(['ls', '-alh', mnt_test])
 
-    with open(mnt_test + 'io_write_logs') as logs:
-        result = str(logs.readlines()[2]).replace('\n', '')
-        end = time.time()
-        print('test', end - start)
-        item = {
-            'id': decimal.Decimal(time.time()),
-            'type': 'efs',
-            'details': {
-                'start_time': decimal.Decimal(start),
-                'end_time': decimal.Decimal(end),
-                'latency': decimal.Decimal(end - start),
+        with open(mnt_test + 'io_write_logs') as logs:
+            result = str(logs.readlines()[2]).replace('\n', '')
+            end = time.time()
+            print('test', end - start)
+            dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
+            table = dynamodb.Table('EFS')
+            response = table.put_item(
+                Item={
+                    'id': decimal.Decimal(time.time()),
+                    'type': 'efs',
+                    'details': {
+                        'start_time': decimal.Decimal(start),
+                        'end_time': decimal.Decimal(end),
+                        'result': result
+                    },
+                    'latency': decimal.Decimal(end - start),
+                    'count': event['count'],
+                    'bs': event['bs'],
+                    'test': event['test']
+                }
+            )
+            return result + ' efs ' + event['bs'] + event['count'] + event['test'] + " "
+    except:
+        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
+        table = dynamodb.Table('EFS')
+        response = table.put_item(
+            Item={
+                'id': decimal.Decimal(time.time()),
+                'type': 'efs',
+                'error': 'error',
                 'count': event['count'],
-                'bs': event['bs']
+                'bs': event['bs'],
+                'test': event['test']
             }
-        }
-        req_dynamoDB('efs', item)
-        return result
+        )
+        return 'list index out of range' + ' efs error ' + event['bs'] + event['count'] + event['test'] + " "
+
