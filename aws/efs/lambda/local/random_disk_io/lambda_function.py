@@ -5,14 +5,11 @@ import random
 import boto3
 import decimal
 
-tmp = '/tmp/'
-mnt_test = '/mnt/test/'
-
 
 def lambda_handler(event, context):
     file_size = int(event['fs'])
     byte_size = int(event['bs'])
-    file_write_path = mnt_test + '/file'
+    file_write_path = '/tmp/file'
 
     block = os.urandom(byte_size)
     total_file_bytes = file_size * 1024 * 1024 - byte_size
@@ -27,7 +24,7 @@ def lambda_handler(event, context):
     disk_write_latency = time() - start
     disk_write_bandwidth = file_size / disk_write_latency
 
-    output = subprocess.check_output(['ls', '-alh', mnt_test])
+    output = subprocess.check_output(['ls', '-alh', '/tmp/'])
     print(output)
 
     start = time()
@@ -37,7 +34,7 @@ def lambda_handler(event, context):
             f.read(byte_size)
     disk_read_latency = time() - start
     disk_read_bandwidth = file_size / disk_read_latency
-
+    print('type: ', type(disk_read_bandwidth))
     rm = subprocess.Popen(['rm', '-rf', file_write_path])
     rm.communicate()
 
@@ -48,7 +45,7 @@ def lambda_handler(event, context):
     response = table.put_item(
         Item={
             'id': decimal.Decimal(time()),
-            'type': 'efs',
+            'type': 'local',
             'disk_write_bandwidth': decimal.Decimal(str(disk_write_bandwidth)),
             'disk_write_latency': decimal.Decimal(disk_write_latency),
             'disk_read_bandwidth': decimal.Decimal(str(disk_read_bandwidth)),
@@ -58,7 +55,6 @@ def lambda_handler(event, context):
             'test': event['test']
         }
     )
-
     return {
         'disk_write_bandwidth': disk_write_bandwidth,
         'disk_write_latency': disk_write_latency,
