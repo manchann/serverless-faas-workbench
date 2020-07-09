@@ -37,18 +37,14 @@ def lambda_handler(event, context):
         with open(mnt_test + 'io_write_logs') as logs:
             result = str(logs.readlines()[2]).replace('\n', '')
             end = time.time()
-            print('test', end - start)
+            print(event['bs'], " ", event['count'])
             dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
             table = dynamodb.Table('EFS')
             response = table.put_item(
                 Item={
                     'id': decimal.Decimal(time.time()),
                     'type': 'efs',
-                    'details': {
-                        'start_time': decimal.Decimal(start),
-                        'end_time': decimal.Decimal(end),
-                        'result': result
-                    },
+                    'result': result,
                     'latency': decimal.Decimal(end - start),
                     'count': event['count'],
                     'bs': event['bs'],
@@ -63,11 +59,10 @@ def lambda_handler(event, context):
             Item={
                 'id': decimal.Decimal(time.time()),
                 'type': 'efs',
-                'error': 'error',
+                'result': 'error',
                 'count': event['count'],
                 'bs': event['bs'],
                 'test': event['test']
             }
         )
         return 'list index out of range' + ' efs error ' + event['bs'] + event['count'] + event['test'] + " "
-

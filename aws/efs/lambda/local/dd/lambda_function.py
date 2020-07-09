@@ -44,11 +44,7 @@ def lambda_handler(event, context):
                 Item={
                     'id': decimal.Decimal(time.time()),
                     'type': 'local',
-                    'details': {
-                        'start_time': decimal.Decimal(start),
-                        'end_time': decimal.Decimal(end),
-                        'result': result
-                    },
+                    'result': result,
                     'latency': decimal.Decimal(end - start),
                     'count': event['count'],
                     'bs': event['bs'],
@@ -63,7 +59,7 @@ def lambda_handler(event, context):
             Item={
                 'id': decimal.Decimal(time.time()),
                 'type': 'local',
-                'error': 'error',
+                'result': 'error',
                 'count': event['count'],
                 'bs': event['bs'],
                 'test': event['test']
