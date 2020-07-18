@@ -1,7 +1,9 @@
 import boto3
 
-dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
-table = dynamodb.Table('EFS')
+table_name = ''
+region_name = ''
+dynamodb = boto3.resource('dynamodb', region_name=region_name)
+table = dynamodb.Table(table_name)
 
 scan = table.scan()
 with table.batch_writer() as batch:
