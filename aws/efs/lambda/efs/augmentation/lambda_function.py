@@ -5,8 +5,8 @@ import json
 import decimal
 from threading import Thread
 
-bucket_name = 'pre-image-group'
-return_bucket_name = 'aug-ec2'
+bucket_name = 'lambda-performace-test'
+return_bucket_name = 'lambda-performace-test-result'
 
 TMP = "/tmp/"
 
@@ -130,30 +130,33 @@ def lambda_handler(event, context):
     bucket_name = records['bucket_name']
     object_path = records['object_path']
     tmp = '/tmp/' + object_path
-    s3_start = time.time()
     s3 = boto3.client('s3')
+
+    download_start = time.time()
     s3.download_file(bucket_name, object_path, tmp)
-    s3_end = time.time()
-    s3_time = s3_end - s3_start
-    aug_start = time.time()
-    ret = augmentation(object_path, tmp)
-    aug_end = time.time()
-    aug_time = aug_end - aug_start
+    download_time = time.time() - download_start
+
+    augmentation(object_path, tmp)
+
+    upload_start = time.time()
+    s3.upload_file(tmp, return_bucket_name, object_path)
+    upload_time = time.time() - upload_start
 
     dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
-    table = dynamodb.Table('lambda')
+    table = dynamodb.Table('EFS')
     end = time.time()
+
     response = table.put_item(
         Item={
             'id': decimal.Decimal(time.time()),
-            'type': 'total',
+            'type': 's3',
             'details': {
                 'start_time': decimal.Decimal(start),
                 'end_time': decimal.Decimal(end),
-                's3_time': decimal.Decimal(s3_time),
-                'aug_time': decimal.Decimal(aug_time),
+                'download_time': decimal.Decimal(download_time),
+                'upload_time': decimal.Decimal(upload_time),
             }
         }
     )
-    print('s3_time: ', s3_time)
-    print('aug_time: ', aug_time)
+    print('download_time: ', download_time)
+    print('upload_time: ', upload_time)
