@@ -4,9 +4,13 @@ import time
 import json
 import decimal
 from threading import Thread
+import os
 
 TMP = "/tmp/"
 mnt_test = '/mnt/test/'
+
+return_path = []
+
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
@@ -23,6 +27,7 @@ def blur(image, file_name):
     image = image.convert('RGB')
     img = image.filter(ImageFilter.BLUR)
     img.save(path)
+    return_path.append(path.split('/')[2])
     return [path]
 
 
@@ -31,6 +36,7 @@ def contour(image, file_name):
     image = image.convert('RGB')
     img = image.filter(ImageFilter.CONTOUR)
     img.save(path)
+    return_path.append(path.split('/')[2])
     return [path]
 
 
@@ -38,6 +44,7 @@ def flip_lr(image, file_name):
     path = TMP + "flip-left-right-" + file_name
     img = image.transpose(Image.FLIP_LEFT_RIGHT)
     img.save(path)
+    return_path.append(path.split('/')[2])
     return [path]
 
 
@@ -45,6 +52,7 @@ def flip_tb(image, file_name):
     path = TMP + "flip-top-bottom-" + file_name
     img = image.transpose(Image.FLIP_TOP_BOTTOM)
     img.save(path)
+    return_path.append(path.split('/')[2])
     return [path]
 
 
@@ -53,6 +61,7 @@ def gray_scale(image, file_name):
     image = image.convert('RGB')
     img = image.convert('L')
     img.save(path)
+    return_path.append(path.split('/')[2])
     return [path]
 
 
@@ -60,6 +69,7 @@ def resized(image, file_name):
     path = TMP + "resized-" + file_name
     image.thumbnail((128, 128))
     image.save(path)
+    return_path.append(path.split('/')[2])
     return [path]
 
 
@@ -67,6 +77,8 @@ def rotate90(image, file_name):
     path = TMP + "rotate-90-" + file_name
     img = image.transpose(Image.ROTATE_90)
     img.save(path)
+    return_path.append(path.split('/')[2])
+
     return [path]
 
 
@@ -74,6 +86,8 @@ def rotate180(image, file_name):
     path = TMP + "rotate-180-" + file_name
     img = image.transpose(Image.ROTATE_180)
     img.save(path)
+    return_path.append(path.split('/')[2])
+
     return [path]
 
 
@@ -81,6 +95,7 @@ def rotate270(image, file_name):
     path = TMP + "rotate-270-" + file_name
     img = image.transpose(Image.ROTATE_270)
     img.save(path)
+    return_path.append(path.split('/')[2])
     return [path]
 
 
@@ -89,6 +104,7 @@ def sharpen(image, file_name):
     image = image.convert('RGB')
     img = image.filter(ImageFilter.SHARPEN)
     img.save(path)
+    return_path.append(path.split('/')[2])
     return [path]
 
 
@@ -122,20 +138,18 @@ def augmentation(file_name, image_path):
 def lambda_handler(event, context):
     start = time.time()
     print(event)
-    records = json.loads(event['Records'][0]['Sns']['Message'])
-
-    bucket_name = records['bucket_name']
-    object_path = records['object_path']
-    tmp = '/tmp/' + object_path
-    s3 = boto3.client('s3')
-
+    p = mnt_test + '/0'
+    file_list = os.listdir(p)
+    tmp = '/mnt/test/0/' + file_list[0]
     download_start = time.time()
 
     download_time = time.time() - download_start
 
-    augmentation(object_path, tmp)
+    augmentation(file_list[0], tmp)
 
     upload_start = time.time()
+    for p in return_path:
+        text = open(p, 'w')
     upload_time = time.time() - upload_start
 
     dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')

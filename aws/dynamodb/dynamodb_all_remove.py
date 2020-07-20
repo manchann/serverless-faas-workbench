@@ -1,7 +1,7 @@
 import boto3
 
-table_name = ''
-region_name = ''
+table_name = 'EFS'
+region_name = 'ap-northeast-2'
 dynamodb = boto3.resource('dynamodb', region_name=region_name)
 table = dynamodb.Table(table_name)
 
