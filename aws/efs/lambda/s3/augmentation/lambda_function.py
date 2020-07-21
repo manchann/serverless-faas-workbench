@@ -137,8 +137,6 @@ def augmentation(file_name, image_path):
 
 
 def lambda_handler(event, context):
-    start = time.time()
-    print(event)
     bucket_name = event['bucket']
     object_path = event['object']
 
@@ -158,7 +156,6 @@ def lambda_handler(event, context):
 
     dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
     table = dynamodb.Table('EFS')
-    end = time.time()
 
     table.put_item(
         Item={

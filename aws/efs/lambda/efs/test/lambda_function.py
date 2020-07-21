@@ -5,9 +5,10 @@ import json
 import decimal
 from threading import Thread
 import os
+import subprocess
 
-TMP = "/tmp/"
-mnt_test = '/mnt/test/'
+TMP = '/mnt/efs/'
+mnt_test = '/mnt/efs/'
 
 return_path = []
 
@@ -27,7 +28,7 @@ def blur(image, file_name):
     image = image.convert('RGB')
     img = image.filter(ImageFilter.BLUR)
     img.save(path)
-    return_path.append(path.split('/')[2])
+    return_path.append(path.split('/')[3])
     return [path]
 
 
@@ -36,7 +37,7 @@ def contour(image, file_name):
     image = image.convert('RGB')
     img = image.filter(ImageFilter.CONTOUR)
     img.save(path)
-    return_path.append(path.split('/')[2])
+    return_path.append(path.split('/')[3])
     return [path]
 
 
@@ -44,7 +45,7 @@ def flip_lr(image, file_name):
     path = TMP + "flip-left-right-" + file_name
     img = image.transpose(Image.FLIP_LEFT_RIGHT)
     img.save(path)
-    return_path.append(path.split('/')[2])
+    return_path.append(path.split('/')[3])
     return [path]
 
 
@@ -52,7 +53,7 @@ def flip_tb(image, file_name):
     path = TMP + "flip-top-bottom-" + file_name
     img = image.transpose(Image.FLIP_TOP_BOTTOM)
     img.save(path)
-    return_path.append(path.split('/')[2])
+    return_path.append(path.split('/')[3])
     return [path]
 
 
@@ -61,7 +62,7 @@ def gray_scale(image, file_name):
     image = image.convert('RGB')
     img = image.convert('L')
     img.save(path)
-    return_path.append(path.split('/')[2])
+    return_path.append(path.split('/')[3])
     return [path]
 
 
@@ -77,7 +78,7 @@ def rotate90(image, file_name):
     path = TMP + "rotate-90-" + file_name
     img = image.transpose(Image.ROTATE_90)
     img.save(path)
-    return_path.append(path.split('/')[2])
+    return_path.append(path.split('/')[3])
 
     return [path]
 
@@ -86,7 +87,7 @@ def rotate180(image, file_name):
     path = TMP + "rotate-180-" + file_name
     img = image.transpose(Image.ROTATE_180)
     img.save(path)
-    return_path.append(path.split('/')[2])
+    return_path.append(path.split('/')[3])
 
     return [path]
 
@@ -95,7 +96,7 @@ def rotate270(image, file_name):
     path = TMP + "rotate-270-" + file_name
     img = image.transpose(Image.ROTATE_270)
     img.save(path)
-    return_path.append(path.split('/')[2])
+    return_path.append(path.split('/')[3])
     return [path]
 
 
@@ -104,7 +105,7 @@ def sharpen(image, file_name):
     image = image.convert('RGB')
     img = image.filter(ImageFilter.SHARPEN)
     img.save(path)
-    return_path.append(path.split('/')[2])
+    return_path.append(path.split('/')[3])
     return [path]
 
 
@@ -136,32 +137,27 @@ def augmentation(file_name, image_path):
 
 
 def lambda_handler(event, context):
-    start = time.time()
-    print(event)
-    p = mnt_test + '/0'
+    p = mnt_test + '0/'
     file_list = os.listdir(p)
-    tmp = '/mnt/test/0/' + file_list[0]
+    tmp = p + file_list[0]
     download_start = time.time()
 
     download_time = time.time() - download_start
 
     augmentation(file_list[0], tmp)
-
+    print(return_path)
     upload_start = time.time()
-    for p in return_path:
-        text = open(p, 'w')
+    for r in return_path:
+        text = open(p+r, 'w')
     upload_time = time.time() - upload_start
 
     dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
     table = dynamodb.Table('EFS')
-    end = time.time()
 
     response = table.put_item(
         Item={
             'id': decimal.Decimal(time.time()),
             'type': 'efs',
-            'start_time': decimal.Decimal(start),
-            'end_time': decimal.Decimal(end),
             'download_time': decimal.Decimal(download_time),
             'upload_time': decimal.Decimal(upload_time),
         }
