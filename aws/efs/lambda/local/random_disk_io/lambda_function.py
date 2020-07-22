@@ -13,7 +13,8 @@ def lambda_handler(event, context):
         file_write_path = '/tmp/file'
 
         block = os.urandom(byte_size)
-        total_file_bytes = file_size * 1024 * 1024 - byte_size
+        r_file_size = file_size * 1024 * 1024
+        total_file_bytes = r_file_size - byte_size
 
         start = time()
         with open(file_write_path, 'wb') as f:
@@ -35,7 +36,6 @@ def lambda_handler(event, context):
                 f.read(byte_size)
         disk_read_latency = time() - start
         disk_read_bandwidth = file_size / disk_read_latency
-        print('type: ', type(disk_read_bandwidth))
         rm = subprocess.Popen(['rm', '-rf', file_write_path])
         rm.communicate()
 
@@ -51,7 +51,7 @@ def lambda_handler(event, context):
                 'disk_write_latency': decimal.Decimal(disk_write_latency),
                 'disk_read_bandwidth': decimal.Decimal(str(disk_read_bandwidth)),
                 'disk_read_latency': decimal.Decimal(disk_read_latency),
-                'fs': event['fs'],
+                'fs': str(r_file_size),
                 'bs': event['bs'],
                 'test': event['test']
             }
@@ -62,7 +62,10 @@ def lambda_handler(event, context):
             'disk_read_bandwidth': disk_read_bandwidth,
             'disk_read_latency': disk_read_latency
         }
-    except OSError:
+    except OSError as os_e:
+        file_size = int(event['fs'])
+        byte_size = int(event['bs'])
+        r_file_size = file_size * 1024 * 1024
         table_name = 'EFS'
         region_name = 'ap-northeast-2'
         dynamodb = boto3.resource('dynamodb', region_name=region_name)
@@ -72,12 +75,16 @@ def lambda_handler(event, context):
                 'id': decimal.Decimal(time()),
                 'type': 'local',
                 'error': 'OS Error',
-                'fs': event['fs'],
+                'fs': str(r_file_size),
                 'bs': event['bs'],
                 'test': event['test']
             }
         )
-    except:
+    except Exception as ex:
+        file_size = int(event['fs'])
+        byte_size = int(event['bs'])
+        r_file_size = file_size * 1024 * 1024
+
         table_name = 'EFS'
         region_name = 'ap-northeast-2'
         dynamodb = boto3.resource('dynamodb', region_name=region_name)
@@ -86,8 +93,8 @@ def lambda_handler(event, context):
             Item={
                 'id': decimal.Decimal(time()),
                 'type': 'local',
-                'error': 'Time out error',
-                'fs': event['fs'],
+                'error': str(ex),
+                'fs': str(r_file_size),
                 'bs': event['bs'],
                 'test': event['test']
             }

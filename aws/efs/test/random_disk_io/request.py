@@ -1,5 +1,6 @@
 import subprocess
 import time
+from threading import Thread
 
 
 def requester(bs, fs, test):
@@ -25,12 +26,12 @@ test_set1 = [
 ]
 # testing bs changes
 test_set2 = [
-    {'bs': '1024', 'fs': '1', 'test': 'test2'},
-    {'bs': '1024', 'fs': '2', 'test': 'test2'},
-    {'bs': '1024', 'fs': '3', 'test': 'test2'},
-    {'bs': '1024', 'fs': '4', 'test': 'test2'},
-    {'bs': '1024', 'fs': '5', 'test': 'test2'},
-    {'bs': '1024', 'fs': '6', 'test': 'test2'},
+    {'bs': '512', 'fs': '1', 'test': 'test2'},
+    {'bs': '512', 'fs': '2', 'test': 'test2'},
+    {'bs': '512', 'fs': '3', 'test': 'test2'},
+    {'bs': '512', 'fs': '4', 'test': 'test2'},
+    {'bs': '512', 'fs': '5', 'test': 'test2'},
+    {'bs': '512', 'fs': '6', 'test': 'test2'},
 ]
 # testing cold start using efs
 test_set3 = [
@@ -39,11 +40,28 @@ test_set3 = [
     {'bs': '1024', 'fs': '5', 'test': 'test3'},
     {'bs': '1024', 'fs': '5', 'test': 'test3'},
 ]
-for obj in test_set1:
-    requester(obj['bs'], obj['fs'], obj['test'])
 
+threads_1 = []
+for obj in test_set1:
+    t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
+    t.start()
+    threads_1.append(t)
+for t in threads_1:
+    t.join()
+
+threads_2 = []
 for obj in test_set2:
-    requester(obj['bs'], obj['fs'], obj['test'])
+    t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
+    t.start()
+    threads_2.append(t)
+for t in threads_2:
+    t.join()
+
+# for obj in test_set1:
+#     requester(obj['bs'], obj['fs'], obj['test'])
 #
+# for obj in test_set2:
+#     requester(obj['bs'], obj['fs'], obj['test'])
+
 # for obj in test_set3:
 #     requester(obj['bs'], obj['fs'], obj['test'])
