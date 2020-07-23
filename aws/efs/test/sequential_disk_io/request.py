@@ -12,10 +12,9 @@ def requester(bs, fs, test):
             bs, fs, test, '0'),
         shell=True)
 
-
-# testing count changes
+# fs(MB) if fs = 1 -> 1MB
 test_set1 = [
-    {'bs': '256', 'fs': "1", 'test': 'test1'},
+    {'bs': '256', 'fs': '1', 'test': 'test1'},
     {'bs': '512', 'fs': '1', 'test': 'test1'},
     {'bs': '1024', 'fs': '1', 'test': 'test1'},
     {'bs': '2048', 'fs': '1', 'test': 'test1'},
@@ -41,9 +40,9 @@ test_set3 = [
 ]
 for obj in test_set1:
     requester(obj['bs'], obj['fs'], obj['test'])
-
-for obj in test_set2:
-    requester(obj['bs'], obj['fs'], obj['test'])
+#
+# for obj in test_set2:
+#     requester(obj['bs'], obj['fs'], obj['test'])
 #
 # for obj in test_set3:
 #     requester(obj['bs'], obj['fs'], obj['test'])

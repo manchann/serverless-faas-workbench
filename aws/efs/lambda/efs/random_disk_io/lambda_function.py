@@ -13,7 +13,7 @@ def lambda_handler(event, context):
     try:
         file_size = int(event['fs'])
         byte_size = int(event['bs'])
-        file_write_path = mnt_test + event['fs'] + event['bs']
+        file_write_path = mnt_test + str(time())
 
         block = os.urandom(byte_size)
         r_file_size = file_size * 1024 * 1024
@@ -29,8 +29,8 @@ def lambda_handler(event, context):
         disk_write_latency = time() - start
         disk_write_bandwidth = file_size / disk_write_latency
 
-        output = subprocess.check_output(['ls', '-alh', mnt_test])
-        print(output)
+        # output = subprocess.check_output(['ls', '-alh', mnt_test])
+        # print(output)
 
         start = time()
         with open(file_write_path, 'rb') as f:
@@ -51,11 +51,12 @@ def lambda_handler(event, context):
             Item={
                 'id': decimal.Decimal(time()),
                 'type': 'efs',
+                'second_type': 'random',
                 'disk_write_bandwidth': decimal.Decimal(str(disk_write_bandwidth)),
                 'disk_write_latency': decimal.Decimal(disk_write_latency),
                 'disk_read_bandwidth': decimal.Decimal(str(disk_read_bandwidth)),
                 'disk_read_latency': decimal.Decimal(disk_read_latency),
-                'fs': str(r_file_size),
+                'fs': event['fs'] + 'MB',
                 'bs': event['bs'],
                 'test': event['test']
             }
@@ -81,8 +82,9 @@ def lambda_handler(event, context):
             Item={
                 'id': decimal.Decimal(time()),
                 'type': 'efs',
+                'second_type': 'random',
                 'error': str(os_e),
-                'fs': str(r_file_size),
+                'fs': event['fs'] + 'MB',
                 'bs': event['bs'],
                 'test': event['test']
             }
@@ -100,8 +102,9 @@ def lambda_handler(event, context):
             Item={
                 'id': decimal.Decimal(time()),
                 'type': 'efs',
+                'second_type': 'random',
                 'error': str(ex),
-                'fs': str(r_file_size),
+                'fs': event['fs'] + 'MB',
                 'bs': event['bs'],
                 'test': event['test']
             }

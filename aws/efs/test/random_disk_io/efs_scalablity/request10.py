@@ -8,10 +8,10 @@ def requester(bs, fs, test):
         "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/efs-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
             bs, fs, test, '0'),
         shell=True)
-    subprocess.check_call(
-        "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/tmp-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
-            bs, fs, test, '0'),
-        shell=True)
+    # subprocess.check_call(
+    #     "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/tmp-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
+    #         bs, fs, test, '0'),
+    #     shell=True)
 
 
 # fs(MB) if fs = 1 -> 1MB
@@ -46,28 +46,29 @@ efs_strong1 = [
     {'bs': '256', 'fs': '1', 'test': 'efs_strong1', 'scale': 1},
 ]
 efs_strong10 = [
-    {'bs': '256', 'fs': '1', 'test': 'efs_strong1', 'scale': 1},
+    {'bs': '256', 'fs': '1', 'test': 'efs_strong10', 'scale': 10},
 ]
 efs_strong20 = [
-    {'bs': '256', 'fs': '1', 'test': 'efs_strong1', 'scale': 1},
+    {'bs': '256', 'fs': '1', 'test': 'efs_strong20', 'scale': 20},
 ]
 efs_strong50 = [
-    {'bs': '256', 'fs': '1', 'test': 'efs_strong1', 'scale': 1},
+    {'bs': '256', 'fs': '1', 'test': 'efs_strong50', 'scale': 50},
 ]
 efs_strong100 = [
-    {'bs': '256', 'fs': '1', 'test': 'efs_strong1', 'scale': 1},
+    {'bs': '256', 'fs': '1', 'test': 'efs_strong100', 'scale': 100},
 ]
 efs_strong200 = [
-    {'bs': '256', 'fs': '1', 'test': 'efs_strong1', 'scale': 1},
+    {'bs': '256', 'fs': '1', 'test': 'efs_strong200', 'scale': 200},
 ]
 
 threads_1 = []
-for obj in test_set2:
-    t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
-    t.start()
-    threads_1.append(t)
-for t in threads_1:
-    t.join()
+for obj in efs_strong10:
+    for i in range(obj['scale']):
+        t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
+        t.start()
+        threads_1.append(t)
+    for t in threads_1:
+        t.join()
 
 # threads_2 = []
 # for obj in test_set1:

@@ -3,6 +3,7 @@ import subprocess
 import os
 import boto3
 import decimal
+import random
 
 
 def lambda_handler(event, context):
@@ -10,7 +11,7 @@ def lambda_handler(event, context):
         file_size = int(event['fs'])
         byte_size = int(event['bs'])
 
-        file_write_path = '/tmp/file'
+        file_write_path = '/tmp/' + str(random.randrange(file_size)) + str(random.randrange(byte_size))
 
         start = time()
         with open(file_write_path, 'wb', buffering=byte_size) as f:
@@ -42,11 +43,12 @@ def lambda_handler(event, context):
             Item={
                 'id': decimal.Decimal(time()),
                 'type': 'local',
+                'second_type': 'sequence',
                 'disk_write_bandwidth': decimal.Decimal(str(disk_write_bandwidth)),
                 'disk_write_latency': decimal.Decimal(disk_write_latency),
                 'disk_read_bandwidth': decimal.Decimal(str(disk_read_bandwidth)),
                 'disk_read_latency': decimal.Decimal(disk_read_latency),
-                'fs': event['fs'],
+                'fs': event['fs'] + 'MB',
                 'bs': event['bs'],
                 'test': event['test']
             }
@@ -67,10 +69,10 @@ def lambda_handler(event, context):
             Item={
                 'id': decimal.Decimal(time()),
                 'type': 'local',
+                'second_type': 'sequence',
                 'error': 'Time out error',
                 'fs': event['fs'],
                 'bs': event['bs'],
                 'test': event['test']
             }
         )
-        return True
