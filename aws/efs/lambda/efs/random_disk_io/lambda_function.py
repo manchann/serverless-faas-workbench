@@ -12,7 +12,7 @@ mnt_test = '/mnt/efs/'
 def lambda_handler(event, context):
     try:
         file_size = int(event['fs'])
-        byte_size = int(event['bs'])
+        byte_size = int(event['bs']) * 1024
         file_write_path = mnt_test + str(time())
 
         block = os.urandom(byte_size)
@@ -24,8 +24,8 @@ def lambda_handler(event, context):
             for _ in range(int(total_file_bytes / byte_size)):
                 f.seek(random.randrange(total_file_bytes))
                 f.write(block)
-            f.flush()
-            os.fsync(f.fileno())
+                f.flush()
+                os.fsync(f.fileno())
         disk_write_latency = time() - start
         disk_write_bandwidth = file_size / disk_write_latency
 
@@ -57,7 +57,7 @@ def lambda_handler(event, context):
                 'disk_read_bandwidth': decimal.Decimal(str(disk_read_bandwidth)),
                 'disk_read_latency': decimal.Decimal(disk_read_latency),
                 'fs': event['fs'] + 'MB',
-                'bs': event['bs'],
+                'bs': event['bs'] + 'KB',
                 'test': event['test']
             }
         )
@@ -85,10 +85,12 @@ def lambda_handler(event, context):
                 'second_type': 'random',
                 'error': str(os_e),
                 'fs': event['fs'] + 'MB',
-                'bs': event['bs'],
+                'bs': event['bs'] + 'KB',
                 'test': event['test']
             }
         )
+        return event['fs'] + 'MB ' + event['bs'] + 'KB\n'
+
     except Exception as ex:
         file_size = int(event['fs'])
         byte_size = int(event['bs'])
@@ -105,7 +107,8 @@ def lambda_handler(event, context):
                 'second_type': 'random',
                 'error': str(ex),
                 'fs': event['fs'] + 'MB',
-                'bs': event['bs'],
+                'bs': event['bs'] + 'KB',
                 'test': event['test']
             }
         )
+        return event['fs'] + 'MB ' + event['bs'] + 'KB\n'

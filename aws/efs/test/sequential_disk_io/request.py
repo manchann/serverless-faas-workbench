@@ -1,5 +1,6 @@
 import subprocess
 import time
+from threading import Thread
 
 
 def requester(bs, fs, test):
@@ -12,15 +13,14 @@ def requester(bs, fs, test):
             bs, fs, test, '0'),
         shell=True)
 
+
 # fs(MB) if fs = 1 -> 1MB
 test_set1 = [
-    {'bs': '256', 'fs': '1', 'test': 'test1'},
-    {'bs': '512', 'fs': '1', 'test': 'test1'},
-    {'bs': '1024', 'fs': '1', 'test': 'test1'},
-    {'bs': '2048', 'fs': '1', 'test': 'test1'},
-    {'bs': '4096', 'fs': '1', 'test': 'test1'},
-    {'bs': '8192', 'fs': '1', 'test': 'test1'},
-    {'bs': '16384', 'fs': '1', 'test': 'test1'},
+    {'bs': '1', 'fs': '10', 'test': 'test1'},
+    {'bs': '50', 'fs': '10', 'test': 'test1'},
+    {'bs': '512', 'fs': '10', 'test': 'test1'},
+    {'bs': '1024', 'fs': '10', 'test': 'test1'},
+    {'bs': '2048', 'fs': '10', 'test': 'test1'},
 ]
 # testing bs changes
 test_set2 = [
@@ -38,8 +38,16 @@ test_set3 = [
     {'bs': '1024', 'fs': '5', 'test': 'test3'},
     {'bs': '1024', 'fs': '5', 'test': 'test3'},
 ]
+
+threads_1 = []
 for obj in test_set1:
-    requester(obj['bs'], obj['fs'], obj['test'])
+    t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
+    t.start()
+    threads_1.append(t)
+for t in threads_1:
+    t.join()
+# for obj in test_set1:
+#     requester(obj['bs'], obj['fs'], obj['test'])
 #
 # for obj in test_set2:
 #     requester(obj['bs'], obj['fs'], obj['test'])

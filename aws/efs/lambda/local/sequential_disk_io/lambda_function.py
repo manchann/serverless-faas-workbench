@@ -9,26 +9,24 @@ import random
 def lambda_handler(event, context):
     try:
         file_size = int(event['fs'])
-        byte_size = int(event['bs'])
+        byte_size = int(event['bs']) * 1024
 
-        file_write_path = '/tmp/' + str(random.randrange(file_size)) + str(random.randrange(byte_size))
-
+        file_write_path = '/tmp/' + str(time())
+        r_file_size = file_size * 1024 * 1024
         start = time()
         with open(file_write_path, 'wb', buffering=byte_size) as f:
-            f.write(os.urandom(file_size * 1024 * 1024))
+            f.write(os.urandom(r_file_size))
             f.flush()
             os.fsync(f.fileno())
         disk_write_latency = time() - start
         disk_write_bandwidth = file_size / disk_write_latency
 
-        output = subprocess.check_output(['ls', '-alh', '/tmp/'])
-        print(output)
+        # output = subprocess.check_output(['ls', '-alh', '/tmp/'])
 
         start = time()
         with open(file_write_path, 'rb', buffering=byte_size) as f:
-            byte = f.read(byte_size)
-            while byte != "":
-                byte = f.read(byte_size)
+            for _ in range(int(r_file_size / byte_size)):
+                f.read(byte_size)
         disk_read_latency = time() - start
         disk_read_bandwidth = file_size / disk_read_latency
 
@@ -49,7 +47,7 @@ def lambda_handler(event, context):
                 'disk_read_bandwidth': decimal.Decimal(str(disk_read_bandwidth)),
                 'disk_read_latency': decimal.Decimal(disk_read_latency),
                 'fs': event['fs'] + 'MB',
-                'bs': event['bs'],
+                'bs': event['bs'] + 'KB',
                 'test': event['test']
             }
         )
@@ -71,8 +69,9 @@ def lambda_handler(event, context):
                 'type': 'local',
                 'second_type': 'sequence',
                 'error': 'Time out error',
-                'fs': event['fs'],
-                'bs': event['bs'],
+                'fs': event['fs'] + 'MB',
+                'bs': event['bs'] + 'KB',
                 'test': event['test']
             }
         )
+        return event['fs'] + 'MB ' + event['bs'] + 'KB\n'
