@@ -4,7 +4,7 @@ import boto3
 import decimal
 
 tmp = '/tmp/'
-mnt_test = '/mnt/test/'
+mnt_test = '/mnt/efs/'
 
 """
 dd - convert and copy a file
@@ -25,15 +25,14 @@ Options
 def lambda_handler(event, context):
     try:
         start = time.time()
-        b = str(int(event['bs']) * 1024)
-        bs = 'bs=' + b
+        b = int(event['bs']) * 1024
+
+        bs = 'bs=' + str(b)
         count = 'count=' + event['count']
-
         out_fd = open(mnt_test + 'io_write_logs', 'w')
-        dd = subprocess.Popen(['dd', 'if=/dev/zero', 'of=/mnt/test/out', bs, count], stderr=out_fd)
+        dd = subprocess.Popen(['dd', 'if=/dev/zero', 'of=/mnt/efs/out', bs, count], stderr=out_fd)
         dd.communicate()
-
-        subprocess.check_output(['ls', '-alh', mnt_test])
+        # subprocess.check_output(['ls', '-alh', mnt_test])
 
         with open(mnt_test + 'io_write_logs') as logs:
             result = str(logs.readlines()[2]).replace('\n', '')
@@ -53,7 +52,7 @@ def lambda_handler(event, context):
                 }
             )
             return result + ' efs ' + event['bs'] + event['count'] + event['test'] + " "
-    except:
+    except Exception as ex:
         dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
         table = dynamodb.Table('EFS')
         response = table.put_item(
@@ -61,10 +60,10 @@ def lambda_handler(event, context):
                 'id': decimal.Decimal(time.time()),
                 'type': 'efs',
                 'second_type': 'dd',
-                'result': 'error',
+                'result': str(ex),
                 'count': event['count'],
                 'bs': event['bs'] + 'KB',
                 'test': event['test']
             }
         )
-        return 'list index out of range' + ' efs error ' + event['bs'] + event['count'] + event['test'] + " "
+        return str(ex)
