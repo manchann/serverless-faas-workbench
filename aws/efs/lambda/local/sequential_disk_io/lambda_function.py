@@ -9,7 +9,7 @@ import random
 def lambda_handler(event, context):
     try:
         file_size = int(event['fs'])
-        byte_size = int(event['bs']) * 1024
+        byte_size = int(float(event['bs']) * 1024)
 
         file_write_path = '/tmp/' + str(time())
         r_file_size = file_size * 1024 * 1024

@@ -24,11 +24,12 @@ test_set1 = [
 ]
 # testing bs changes
 test_set2 = [
-    {'bs': '1', 'fs': '100', 'test': 'test2'},
-    {'bs': '50', 'fs': '100', 'test': 'test2'},
-    {'bs': '512', 'fs': '100', 'test': 'test2'},
-    {'bs': '1024', 'fs': '100', 'test': 'test2'},
-    {'bs': '2048', 'fs': '100', 'test': 'test2'},
+    {'bs': '0.09765625', 'fs': '10', 'test': 'test2'},
+    {'bs': '1', 'fs': '10', 'test': 'test2'},
+    {'bs': '50', 'fs': '10', 'test': 'test2'},
+    {'bs': '512', 'fs': '10', 'test': 'test2'},
+    {'bs': '1024', 'fs': '10', 'test': 'test2'},
+    {'bs': '2048', 'fs': '10', 'test': 'test2'},
 ]
 # testing cold start using efs
 test_set3 = [
@@ -65,7 +66,7 @@ efs_strong200 = [
 #     t.join()
 
 threads_2 = []
-for obj in test_set3:
+for obj in test_set2:
     t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
     t.start()
     threads_2.append(t)
