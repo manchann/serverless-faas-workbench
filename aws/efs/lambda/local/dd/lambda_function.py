@@ -25,7 +25,7 @@ Options
 def lambda_handler(event, context):
     try:
         start = time.time()
-        b = str(int(event) * 1024)
+        b = str(int(event['bs']) * 1024)
         bs = 'bs=' + b
         count = 'count=' + event['count']
 
