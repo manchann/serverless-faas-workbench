@@ -44,6 +44,7 @@ def lambda_handler(event, context):
                 Item={
                     'id': decimal.Decimal(time.time()),
                     'type': 'efs',
+                    'second_type': 'dd',
                     'result': result,
                     'latency': decimal.Decimal(end - start),
                     'count': event['count'],
