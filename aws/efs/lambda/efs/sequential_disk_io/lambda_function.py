@@ -18,7 +18,7 @@ def lambda_handler(event, context):
         file_write_path = mnt_test + str(time())
         r_file_size = file_size * 1024 * 1024
         start = time()
-        with open(file_write_path, 'wb') as f:
+        with open(file_write_path, 'wb', 0) as f:
             for idx in range(int(r_file_size / byte_size)):
                 f.seek(byte_size * (idx + 1))
                 f.write(block)
@@ -30,7 +30,7 @@ def lambda_handler(event, context):
         # output = subprocess.check_output(['ls', '-alh', mnt_test])
 
         start = time()
-        with open(file_write_path, 'rb') as f:
+        with open(file_write_path, 'rb', 0) as f:
             for _ in range(int(r_file_size / byte_size)):
                 f.read(byte_size)
         disk_read_latency = time() - start
