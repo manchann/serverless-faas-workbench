@@ -5,22 +5,8 @@ import boto3
 
 region_name = 'ap-northeast-2'
 
-
 def read_image_from_s3(bucket, key, region_name):
-    """Load image file from s3.
 
-    Parameters
-    ----------
-    bucket: string
-        Bucket name
-    key : string
-        Path in s3
-
-    Returns
-    -------
-    np array
-        Image array
-    """
     s3 = boto3.resource('s3', region_name)
     bucket = s3.Bucket(bucket)
     object = bucket.Object(key)
@@ -31,19 +17,7 @@ def read_image_from_s3(bucket, key, region_name):
 
 
 def write_image_to_s3(img_array, bucket, key, region_name):
-    """Write an image array into S3 bucket
 
-    Parameters
-    ----------
-    bucket: string
-        Bucket name
-    key : string
-        Path in s3
-
-    Returns
-    -------
-    None
-    """
     s3 = boto3.resource('s3', region_name)
     bucket = s3.Bucket(bucket)
     object = bucket.Object(key)
