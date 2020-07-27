@@ -2,7 +2,6 @@ python3 /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamod
 sleep 10
 
 aws lambda update-function-configuration --function-name efs-test --handler random.lambda_handler
-aws lambda update-function-configuration --function-name tmp-test --handler random.lambda_handler
 sleep 40
 
 python3 ./efs_scalablity/request1.py
@@ -19,7 +18,6 @@ python3 ./efs_scalablity/request200.py
 sleep 100
 
 aws lambda update-function-configuration --function-name efs-test --handler sequence.lambda_handler
-aws lambda update-function-configuration --function-name tmp-test --handler sequence.lambda_handler
 sleep 60
 
 python3 ./efs_scalablity/request1.py
@@ -36,7 +34,6 @@ python3 ./efs_scalablity/request200.py
 sleep 100
 
 aws lambda update-function-configuration --function-name efs-test --handler dd.lambda_handler
-aws lambda update-function-configuration --function-name tmp-test --handler dd.lambda_handler
 sleep 40
 
 python3 ./efs_scalablity/request1.py
