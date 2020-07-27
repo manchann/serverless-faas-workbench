@@ -25,7 +25,8 @@ Options
 def lambda_handler(event, context):
     try:
         start = time.time()
-        bs = 'bs=' + event['bs']
+        b = str(int(event) * 1024)
+        bs = 'bs=' + b
         count = 'count=' + event['count']
 
         out_fd = open(tmp + 'io_write_logs', 'w')
@@ -44,10 +45,11 @@ def lambda_handler(event, context):
                 Item={
                     'id': decimal.Decimal(time.time()),
                     'type': 'local',
+                    'second_type': 'dd',
                     'result': result,
                     'latency': decimal.Decimal(end - start),
                     'count': event['count'],
-                    'bs': event['bs'],
+                    'bs': event['bs'] + 'KB',
                     'test': event['test']
                 }
             )
@@ -59,9 +61,10 @@ def lambda_handler(event, context):
             Item={
                 'id': decimal.Decimal(time.time()),
                 'type': 'local',
+                'second_type': 'dd',
                 'result': 'error',
                 'count': event['count'],
-                'bs': event['bs'],
+                'bs': event['bs'] + 'KB',
                 'test': event['test']
             }
         )

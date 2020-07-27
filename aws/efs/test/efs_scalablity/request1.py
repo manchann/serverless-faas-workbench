@@ -3,10 +3,10 @@ import time
 from threading import Thread
 
 
-def requester(bs, fs, test):
+def requester(bs, fs, test, count):
     subprocess.check_call(
         "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/efs-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
-            bs, fs, test, '0'),
+            bs, fs, test, count),
         shell=True)
     # subprocess.check_call(
     #     "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/tmp-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
@@ -43,28 +43,28 @@ test_set3 = [
 # efs scalablity testset
 
 efs_strong1 = [
-    {'bs': '1', 'fs': '1', 'test': 'efs_strong1', 'scale': 1},
+    {'bs': '1', 'fs': '1', 'test': 'efs_strong1', 'scale': 1, 'count': 1024},
 ]
 efs_strong10 = [
-    {'bs': '1', 'fs': '1', 'test': 'efs_strong10', 'scale': 10},
+    {'bs': '1', 'fs': '1', 'test': 'efs_strong10', 'scale': 10, 'count': 1024},
 ]
 efs_strong20 = [
-    {'bs': '1', 'fs': '1', 'test': 'efs_strong20', 'scale': 20},
+    {'bs': '1', 'fs': '1', 'test': 'efs_strong20', 'scale': 20, 'count': 1024},
 ]
 efs_strong50 = [
-    {'bs': '1', 'fs': '1', 'test': 'efs_strong50', 'scale': 50},
+    {'bs': '1', 'fs': '1', 'test': 'efs_strong50', 'scale': 50, 'count': 1024},
 ]
 efs_strong100 = [
-    {'bs': '1', 'fs': '1', 'test': 'efs_strong100', 'scale': 100},
+    {'bs': '1', 'fs': '1', 'test': 'efs_strong100', 'scale': 100, 'count': 1024},
 ]
 efs_strong200 = [
-    {'bs': '1', 'fs': '1', 'test': 'efs_strong200', 'scale': 200},
+    {'bs': '1', 'fs': '1', 'test': 'efs_strong200', 'scale': 200, 'count': 1024},
 ]
 
 threads_1 = []
 for obj in efs_strong1:
     for i in range(obj['scale']):
-        t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
+        t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test'], obj['count']))
         t.start()
         threads_1.append(t)
     for t in threads_1:
