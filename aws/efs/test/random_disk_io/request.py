@@ -24,12 +24,11 @@ test_set1 = [
 ]
 # testing bs changes
 test_set2 = [
-    {'bs': '0.09765625', 'fs': '400', 'test': 'test1'},
-    {'bs': '1', 'fs': '400', 'test': 'test2'},
-    {'bs': '50', 'fs': '400', 'test': 'test3'},
-    {'bs': '512', 'fs': '400', 'test': 'test4'},
-    {'bs': '1024', 'fs': '400', 'test': 'test5'},
-    {'bs': '2048', 'fs': '400', 'test': 'test6'},
+    {'bs': '1', 'fs': '200', 'test': 'test4'},
+    {'bs': '50', 'fs': '200', 'test': 'test4'},
+    {'bs': '512', 'fs': '200', 'test': 'test4'},
+    {'bs': '1024', 'fs': '200', 'test': 'test4'},
+    {'bs': '2048', 'fs': '200', 'test': 'test4'},
 ]
 # testing cold start using efs
 test_set3 = [
