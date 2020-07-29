@@ -15,18 +15,15 @@ def lambda_handler(event, context):
         byte_size = int(float(event['bs']) * 1024)
 
         block = os.urandom(byte_size)
-        file_write_path = mnt_test + 'read_file'
+        file_read_path = mnt_test + 'read_file'
         r_file_size = file_size * 1024 * 1024
 
         start = time()
-        with open(file_write_path, 'rb', 0) as f:
+        with open(file_read_path, 'rb', 0) as f:
             for _ in range(int(r_file_size / byte_size)):
                 f.read(byte_size)
         disk_read_latency = time() - start
         disk_read_bandwidth = file_size / disk_read_latency
-
-        rm = subprocess.Popen(['rm', '-rf', file_write_path])
-        rm.communicate()
 
         table_name = 'EFS'
         region_name = 'ap-northeast-2'

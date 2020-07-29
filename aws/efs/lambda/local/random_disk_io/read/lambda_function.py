@@ -13,16 +13,18 @@ def lambda_handler(event, context):
         file_size = int(event['fs'])
         byte_size = int(float(event['bs']) * 1024)
 
-        file_write_path = opt + 'read_file'
+        file_read_path = opt + 'read_file'
         r_file_size = file_size * 1024 * 1024
         total_file_bytes = r_file_size - byte_size
 
         random_set = [i for i in range(int(total_file_bytes / byte_size))]
 
         start = time()
-        with open(file_write_path, 'rb', 0) as f:
+        with open(file_read_path, 'rb', 0) as f:
             for _ in range(int(total_file_bytes / byte_size)):
-                f.seek(random.randrange(total_file_bytes))
+                ran_num = random.choice(random_set)
+                random_set.remove(ran_num)
+                f.seek(ran_num * byte_size)
                 f.read(byte_size)
         disk_read_latency = time() - start
         disk_read_bandwidth = file_size / disk_read_latency
