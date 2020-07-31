@@ -3,7 +3,7 @@
 lambda_memory="512 2048"
 
 for lm in $lambda_memory; do
-  python3 /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_all_remove.py
+  python3 ./dynamodb_all_remove.py
 
   #  aws lambda update-function-configuration --function-name efs-test --handler random-write.lambda_handler --memory-size $lm
   #  aws lambda update-function-configuration --function-name tmp-test --handler random-write.lambda_handler --memory-size $lm
@@ -28,8 +28,8 @@ for lm in $lambda_memory; do
   #
   #  done
 
-  aws lambda update-function-configuration --function-name efs-test --handler random-read.lambda_handler --memory-size $lm
-  aws lambda update-function-configuration --function-name tmp-test --handler random-read.lambda_handler --memory-size $lm
+  aws lambda update-function-configuration --function-name efs-test --handler random-read.lambda_handler
+  aws lambda update-function-configuration --function-name tmp-test --handler random-read.lambda_handler
 
   for ((i = 0; i < 5; i++)); do
 
@@ -64,5 +64,5 @@ for lm in $lambda_memory; do
 
   done
 
-  sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh EFS /Users/manchan/Desktop/BigDataLab/Papers/file_rw_test-$lm
+  sh ./dynamodb_export_json.sh EFS ./file_r_test2-$lm
 done

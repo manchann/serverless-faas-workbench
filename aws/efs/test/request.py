@@ -64,21 +64,21 @@ efs_strong200 = [
 # for t in threads_1:
 #     t.join()
 
-threads_2 = []
-for obj in test_set2:
-    t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
-    t.start()
-    threads_2.append(t)
-for t in threads_2:
-    t.join()
-
-# threads_3 = []
-# for obj in test_set3:
+# threads_2 = []
+# for obj in test_set2:
 #     t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
 #     t.start()
-#     threads_3.append(t)
-# for t in threads_3:
+#     threads_2.append(t)
+# for t in threads_2:
 #     t.join()
+
+threads_3 = []
+for obj in test_set3:
+    t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
+    t.start()
+    threads_3.append(t)
+for t in threads_3:
+    t.join()
 
 # for obj in test_set1:
 #     requester(obj['bs'], obj['fs'], obj['test'])
