@@ -24,22 +24,50 @@ test_set1 = [
 ]
 # testing bs changes
 test_set2 = [
-    {'bs': '50', 'fs': '200', 'test': 'test4'},
-    {'bs': '256', 'fs': '200', 'test': 'test4'},
-    {'bs': '1024', 'fs': '200', 'test': 'test4'},
     {'bs': '2048', 'fs': '200', 'test': 'test4'},
+    {'bs': '1024', 'fs': '200', 'test': 'test4'},
+    {'bs': '256', 'fs': '200', 'test': 'test4'},
+    {'bs': '50', 'fs': '200', 'test': 'test4'},
+    {'bs': '1', 'fs': '200', 'test': 'test4'},
 ]
 # testing cold start using efs
 test_set3 = [
     {'bs': '50', 'fs': '200', 'test': 'test3'},
-    {'bs': '256', 'fs': '200', 'test': 'test4'},
+]
+
+bs_50 = [
     {'bs': '50', 'fs': '200', 'test': 'test3'},
-    {'bs': '256', 'fs': '200', 'test': 'test4'},
+    {'bs': '50', 'fs': '200', 'test': 'test3'},
+    {'bs': '50', 'fs': '200', 'test': 'test3'},
+    {'bs': '50', 'fs': '200', 'test': 'test3'},
     {'bs': '50', 'fs': '200', 'test': 'test3'},
 ]
 
-# efs scalablity testset
+bs_256 = [
+    {'bs': '256', 'fs': '200', 'test': 'test3'},
+    {'bs': '256', 'fs': '200', 'test': 'test3'},
+    {'bs': '256', 'fs': '200', 'test': 'test3'},
+    {'bs': '256', 'fs': '200', 'test': 'test3'},
+    {'bs': '256', 'fs': '200', 'test': 'test3'},
+]
 
+bs_1024 = [
+    {'bs': '1024', 'fs': '200', 'test': 'test3'},
+    {'bs': '1024', 'fs': '200', 'test': 'test3'},
+    {'bs': '1024', 'fs': '200', 'test': 'test3'},
+    {'bs': '1024', 'fs': '200', 'test': 'test3'},
+    {'bs': '1024', 'fs': '200', 'test': 'test3'},
+]
+
+bs_2048 = [
+    {'bs': '2048', 'fs': '200', 'test': 'test3'},
+    {'bs': '2048', 'fs': '200', 'test': 'test3'},
+    {'bs': '2048', 'fs': '200', 'test': 'test3'},
+    {'bs': '2048', 'fs': '200', 'test': 'test3'},
+    {'bs': '2048', 'fs': '200', 'test': 'test3'},
+]
+
+# efs scalablity testset
 efs_strong1 = [
     {'bs': '256', 'fs': '1', 'test': 'efs_strong1', 'scale': 1},
 ]
@@ -67,21 +95,21 @@ efs_strong200 = [
 # for t in threads_1:
 #     t.join()
 
-# threads_2 = []
-# for obj in test_set2:
-#     t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
-#     t.start()
-#     threads_2.append(t)
-# for t in threads_2:
-#     t.join()
-
-threads_3 = []
-for obj in test_set3:
+threads_2 = []
+for obj in bs_2048:
     t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
     t.start()
-    threads_3.append(t)
-for t in threads_3:
+    threads_2.append(t)
+for t in threads_2:
     t.join()
+
+# threads_3 = []
+# for obj in test_set3:
+#     t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
+#     t.start()
+#     threads_3.append(t)
+# for t in threads_3:
+#     t.join()
 
 # for obj in test_set1:
 #     requester(obj['bs'], obj['fs'], obj['test'])

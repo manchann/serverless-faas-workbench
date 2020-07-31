@@ -2,6 +2,8 @@
 
 lambda_memory="512 2048"
 
+bs_set="1 50 256 1024 2048"
+
 for lm in $lambda_memory; do
   python3 /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_all_remove.py
 
@@ -31,7 +33,7 @@ for lm in $lambda_memory; do
   aws lambda update-function-configuration --function-name efs-test --handler random-read.lambda_handler --memory-size $lm
   aws lambda update-function-configuration --function-name tmp-test --handler random-read.lambda_handler --memory-size $lm
 
-  for ((i = 0; i < 5; i++)); do
+  for bs in $bs_set; do
 
     sleep 10
     aws lambda update-function-configuration --function-name efs-test --memory-size 256
@@ -41,7 +43,7 @@ for lm in $lambda_memory; do
     aws lambda update-function-configuration --function-name tmp-test --memory-size $lm
     sleep 40
 
-    python3 ./request.py
+    python3 ./bs_set/bs_$bs.py
     sleep 60
 
   done
@@ -49,7 +51,7 @@ for lm in $lambda_memory; do
   aws lambda update-function-configuration --function-name efs-test --handler sequence-read.lambda_handler
   aws lambda update-function-configuration --function-name tmp-test --handler sequence-read.lambda_handler
 
-  for ((i = 0; i < 5; i++)); do
+  for bs in $bs_set; do
 
     sleep 10
     aws lambda update-function-configuration --function-name efs-test --memory-size 256
@@ -59,7 +61,7 @@ for lm in $lambda_memory; do
     aws lambda update-function-configuration --function-name tmp-test --memory-size $lm
     sleep 40
 
-    python3 ./request.py
+    python3 ./bs_set/bs_$bs.py
     sleep 60
 
   done
