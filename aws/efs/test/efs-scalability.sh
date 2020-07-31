@@ -1,57 +1,27 @@
-#remove dynamodb datas
-python3 /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_all_remove.py
-sleep 10
-#change lambda_function sequence -> random
-aws lambda update-function-configuration --function-name efs-test --handler random.lambda_handler
-sleep 40
+#!/bin/bash
 
-#start random access work
-python3 ./efs_scalablity/request1.py
-sleep 15
-python3 ./efs_scalablity/request10.py
-sleep 20
-python3 ./efs_scalablity/request20.py
-sleep 20
-python3 ./efs_scalablity/request50.py
-sleep 50
-python3 ./efs_scalablity/request100.py
-sleep 100
-python3 ./efs_scalablity/request200.py
-sleep 100
+lambda_memory="512 2048"
 
-#change lambda_function random -> sequence
-aws lambda update-function-configuration --function-name efs-test --handler sequence.lambda_handler
-sleep 60
-
-python3 ./efs_scalablity/request1.py
-sleep 15
-python3 ./efs_scalablity/request10.py
-sleep 20
-python3 ./efs_scalablity/request20.py
-sleep 20
-python3 ./efs_scalablity/request50.py
-sleep 50
-python3 ./efs_scalablity/request100.py
-sleep 100
-python3 ./efs_scalablity/request200.py
-sleep 100
-
-#change lambda_function sequence -> dd
-aws lambda update-function-configuration --function-name efs-test --handler dd.lambda_handler
-sleep 40
-
-python3 ./efs_scalablity/request1.py
-sleep 15
-python3 ./efs_scalablity/request10.py
-sleep 20
-python3 ./efs_scalablity/request20.py
-sleep 20
-python3 ./efs_scalablity/request50.py
-sleep 50
-python3 ./efs_scalablity/request100.py
-sleep 100
-python3 ./efs_scalablity/request200.py
-sleep 100
-
-#export dynamodb data to local json file
-sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh EFS /Users/manchan/Desktop/BigDataLab/Papers/efs-scalablity
+lambda_functions="random-read sequence-read dd"
+bs_set="1MB"
+for lm in $lambda_memory; do
+  #remove dynamodb datas
+  python3 /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_all_remove.py
+  sleep 10
+  #change lambda_function sequence -> random
+  for lf in $lambda_functions; do
+    efs_scale="1 10 20 50 100 200"
+    for bs in $bs_set; do
+      for es in $efs_scale; do
+        aws lambda update-function-configuration --function-name efs-test --handler $lf.lambda_handler --memory-size 256
+        sleep 40
+        aws lambda update-function-configuration --function-name efs-test --memory-size $lm
+        sleep 40
+        python3 ./efs_scalablity/$bs/request$es.py
+        sleep 60
+      done
+    done
+    sleep 60
+  done
+  sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh EFS /Users/manchan/Desktop/BigDataLab/Papers/efs-scalablity
+done
