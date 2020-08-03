@@ -125,8 +125,8 @@ functions = [
 
 def augmentation(file_name, image_path):
     return_file = []
+    image = Image.open(image_path)
     for f in functions:
-        image = Image.open(image_path)
         t = Thread(target=f, args=(image, file_name))
         t.start()
         return_file.append(t)
