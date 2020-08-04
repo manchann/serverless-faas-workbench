@@ -23,7 +23,7 @@ def lambda_handler(event, context):
         disk_read_latency = time() - start
         disk_read_bandwidth = file_size / disk_read_latency
 
-        table_name = 'EFS'
+        table_name = 'local'
         region_name = 'ap-northeast-2'
         dynamodb = boto3.resource('dynamodb', region_name=region_name)
         table = dynamodb.Table(table_name)
@@ -46,7 +46,7 @@ def lambda_handler(event, context):
         }
 
     except Exception as ex:
-        table_name = 'EFS'
+        table_name = 'local'
         region_name = 'ap-northeast-2'
         dynamodb = boto3.resource('dynamodb', region_name=region_name)
         table = dynamodb.Table(table_name)

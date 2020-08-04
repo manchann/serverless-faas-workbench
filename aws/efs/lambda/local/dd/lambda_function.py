@@ -40,7 +40,7 @@ def lambda_handler(event, context):
             end = time.time()
             print('test', end - start)
             dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
-            table = dynamodb.Table('EFS')
+            table = dynamodb.Table('local')
             response = table.put_item(
                 Item={
                     'id': decimal.Decimal(time.time()),
