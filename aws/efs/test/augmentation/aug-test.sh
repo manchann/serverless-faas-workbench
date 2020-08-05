@@ -11,5 +11,5 @@ for lm in $lambda_memory; do
 
   python3 ./request.py
 
-  sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh EFS /Users/manchan/Desktop/BigDataLab/Papers/aug-$lm
+  sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh aug2 /Users/manchan/Desktop/BigDataLab/Papers/aug-$lm
 done

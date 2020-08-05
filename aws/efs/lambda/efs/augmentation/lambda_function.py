@@ -164,6 +164,7 @@ def lambda_handler(event, context):
             'id': decimal.Decimal(time.time()),
             'type': 'efs',
             'second_type': 'aug',
+            'name': event['object'],
             'download_time': decimal.Decimal(download_time),
             'upload_time': decimal.Decimal(upload_time),
         }
