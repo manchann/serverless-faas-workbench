@@ -4,14 +4,14 @@ from threading import Thread
 
 
 def requester(bs, fs, test, count):
-    subprocess.check_call(
-        "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/efs-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
-            bs, fs, test, count),
-        shell=True)
     # subprocess.check_call(
-    #     "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/tmp-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
-    #         bs, fs, test, '0'),
+    #     "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/efs-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
+    #         bs, fs, test, count),
     #     shell=True)
+    subprocess.check_call(
+        "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/tmp-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
+            bs, fs, test, '0'),
+        shell=True)
 
 
 # fs(MB) if fs = 1 -> 1MB

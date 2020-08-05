@@ -5,8 +5,9 @@ import os
 import subprocess
 
 bucket_name = 'lambda-performance'
-
+result_bucket_name = 'lambda-performance-result'
 bucket = boto3.resource('s3').Bucket(bucket_name)
+result_bucket = boto3.resource('s3').Bucket(result_bucket_name)
 
 
 def make_topic(bucket_name, object_path_key):
@@ -26,6 +27,8 @@ def make_topic(bucket_name, object_path_key):
 
 ret_arr = []
 num = 0
+
+result_bucket.objects.all().delete()
 
 threads = []
 for bucket_object in bucket.objects.all():

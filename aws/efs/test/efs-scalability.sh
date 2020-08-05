@@ -19,10 +19,10 @@ for lm in $lambda_memory; do
         aws lambda update-function-configuration --function-name efs-test --memory-size $lm
         sleep 40
         python3 /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/efs/test/efs_scalablity/$bs/request$es.py
-        sleep 60
+        sleep 600
       done
     done
     sleep 400
   done
-  sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh EFS /Users/manchan/Desktop/BigDataLab/Papers/efs-scalablity-$lm-$bs
+  sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh EFS /Users/manchan/Desktop/BigDataLab/Papers/efs-scalability-$lm-$bs
 done

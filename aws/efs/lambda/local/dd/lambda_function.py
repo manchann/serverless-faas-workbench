@@ -56,7 +56,7 @@ def lambda_handler(event, context):
             return result + ' tmp ' + event['bs'] + event['count'] + event['test'] + " "
     except:
         dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
-        table = dynamodb.Table('EFS')
+        table = dynamodb.Table('local')
         response = table.put_item(
             Item={
                 'id': decimal.Decimal(time.time()),
