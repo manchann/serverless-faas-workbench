@@ -168,8 +168,9 @@ def lambda_handler(event, context):
     download_start = time.time()
     image = read_image_from_s3(bucket_name, object_path)
     download_time = time.time() - download_start
+    augmentation_start = time.time()
     augmentation(object_path, image)
-
+    augmentation_time = time.time() - augmentation_start
     upload_start = time.time()
     for r in return_path:
         write_image_to_s3(r[0], r[1])
@@ -185,6 +186,7 @@ def lambda_handler(event, context):
             'second_type': 'aug',
             'name': event['object'],
             'download_time': decimal.Decimal(download_time),
+            'augmentation_time': decimal.Decimal(augmentation_time),
             'upload_time': decimal.Decimal(upload_time),
         }
     )

@@ -5,6 +5,7 @@ import json
 import decimal
 from threading import Thread
 from io import BytesIO
+import subprocess
 
 # import numpy as np
 
@@ -148,14 +149,16 @@ def lambda_handler(event, context):
     download_start = time.time()
     image = Image.open(data_path)
     download_time = time.time() - download_start
-
+    augmentation_start = time.time()
     augmentation(object_path, image)
-
+    augmentation_time = time.time() - augmentation_start
     upload_start = time.time()
     for r in return_path:
         r[0].save(r[1])
     upload_time = time.time() - upload_start
-
+    for r in return_path:
+        rm = subprocess.Popen(['rm', '-rf', r[1]])
+        rm.communicate()
     dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
     table = dynamodb.Table('aug2')
 
@@ -166,6 +169,7 @@ def lambda_handler(event, context):
             'second_type': 'aug',
             'name': event['object'],
             'download_time': decimal.Decimal(download_time),
+            'augmentation_time': decimal.Decimal(augmentation_time),
             'upload_time': decimal.Decimal(upload_time),
         }
     )

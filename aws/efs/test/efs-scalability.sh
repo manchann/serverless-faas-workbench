@@ -2,7 +2,7 @@
 
 lambda_memory="512 2048"
 
-lambda_functions="random-read sequence-read dd"
+lambda_functions="random-write sequence-write"
 bs_set="1KB" #1MB 1KB
 efs_scale="1 10 20 50 100 200"
 

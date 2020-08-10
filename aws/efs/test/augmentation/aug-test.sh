@@ -10,6 +10,6 @@ for lm in $lambda_memory; do
   sleep 60
 
   python3 ./request.py
-
+  sleep 120
   sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh aug2 /Users/manchan/Desktop/BigDataLab/Papers/aug-$lm
 done
