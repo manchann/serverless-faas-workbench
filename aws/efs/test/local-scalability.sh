@@ -22,7 +22,7 @@ for lm in $lambda_memory; do
         sleep 60
       done
     done
-    sleep 400
+    sleep 60
   done
   sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh local /Users/manchan/Desktop/BigDataLab/Papers/local-scalability-$lm-$bs
 done

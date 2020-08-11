@@ -28,10 +28,12 @@ result_bucket.objects.all().delete()
 
 threads = []
 for bucket_object in bucket.objects.all():
-    t = Thread(target=make_topic, args=('test10', bucket_object.key))
+    t = Thread(target=make_topic, args=('test100', bucket_object.key))
     t.start()
     threads.append(t)
     num += 1
+    if num == 100:
+        break
 for t in threads:
     t.join()
 print('이미지 개수:', num)

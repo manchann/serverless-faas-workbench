@@ -1,9 +1,9 @@
 #!/bin/bash
 
-lambda_memory="512 2048"
+lambda_memory="512"
 
 lambda_functions="random-write sequence-write"
-bs_set="1KB" #1MB 1KB
+bs_set="1MB" #1MB 1KB
 efs_scale="1 10 20 50 100 200"
 
 for lm in $lambda_memory; do
@@ -19,10 +19,9 @@ for lm in $lambda_memory; do
         aws lambda update-function-configuration --function-name efs-test --memory-size $lm
         sleep 40
         python3 /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/efs/test/efs_scalablity/$bs/request$es.py
-        sleep 600
+        sleep 200
       done
     done
-    sleep 400
   done
-  sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh EFS /Users/manchan/Desktop/BigDataLab/Papers/efs-scalability-$lm-$bs
+  sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh EFS /Users/manchan/Desktop/BigDataLab/Papers/efs-scalability-seq-$lm-$bs
 done

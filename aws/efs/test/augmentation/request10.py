@@ -32,6 +32,8 @@ for bucket_object in bucket.objects.all():
     t.start()
     threads.append(t)
     num += 1
+    if num == 10:
+        break
 for t in threads:
     t.join()
 print('이미지 개수:', num)
