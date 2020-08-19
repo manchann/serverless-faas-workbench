@@ -135,16 +135,16 @@ def write_image_to_s3(img, key):
 
 
 functions = [
-    blur,
-    contour,
+    # blur,
+    # contour,
     flip_lr,
     flip_tb,
     gray_scale,
-    resized,
+    # resized,
     rotate90,
     rotate180,
-    rotate270,
-    sharpen
+    # rotate270,
+    # sharpen
 ]
 
 
@@ -160,6 +160,12 @@ def augmentation(file_name, image):
     return return_file
 
 
+def remove_image(key):
+    client = boto3.client('s3')
+    client.delete_object(Bucket=return_bucket_name, Key=key)
+
+
+
 def lambda_handler(event, context):
     object_path = event['object']
 
@@ -172,12 +178,22 @@ def lambda_handler(event, context):
     augmentation(object_path, image)
     augmentation_time = time.time() - augmentation_start
     upload_start = time.time()
+    u_t = []
     for r in return_path:
-        write_image_to_s3(r[0], r[1])
+        t = Thread(target=write_image_to_s3, args=(r[0], r[1]))
+        t.start()
+        u_t.append(t)
+
+    for t in u_t:
+        t.join()
     upload_time = time.time() - upload_start
 
+    r_t = []
+
+    for r in return_path:
+        remove_image(r[1])
     dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
-    table = dynamodb.Table('aug2')
+    table = dynamodb.Table('aug')
 
     table.put_item(
         Item={
@@ -188,10 +204,12 @@ def lambda_handler(event, context):
             'download_time': decimal.Decimal(download_time),
             'augmentation_time': decimal.Decimal(augmentation_time),
             'upload_time': decimal.Decimal(upload_time),
+            'test': event['test'],
         }
     )
 
     return (
+        'type: s3',
         'download_time: ', download_time,
         'upload_time: ', upload_time
     )

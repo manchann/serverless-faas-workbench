@@ -5,11 +5,11 @@ from threading import Thread
 
 def requester(bs, fs, test):
     subprocess.check_call(
-        "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/efs-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
+        "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/provision-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
             bs, fs, test, '0'),
         shell=True)
     subprocess.check_call(
-        "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/tmp-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
+        "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/con-tmp/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
             bs, fs, test, '0'),
         shell=True)
 
@@ -36,10 +36,6 @@ test_set3 = [
 ]
 
 bs_50 = [
-    {'bs': '50', 'fs': '200', 'test': 'test3'},
-    {'bs': '50', 'fs': '200', 'test': 'test3'},
-    {'bs': '50', 'fs': '200', 'test': 'test3'},
-    {'bs': '50', 'fs': '200', 'test': 'test3'},
     {'bs': '50', 'fs': '200', 'test': 'test3'},
 ]
 

@@ -12,11 +12,11 @@ result_bucket = boto3.resource('s3').Bucket(result_bucket_name)
 
 def make_topic(test, object_path_key):
     subprocess.check_call(
-        "\curl 'https://yfidnyb622.execute-api.ap-northeast-2.amazonaws.com/test/s3-aug-test/?object=%22'{}'%22&test=%22'{}'%22#'".format(
+        "\curl 'https://yfidnyb622.execute-api.ap-northeast-2.amazonaws.com/test/efs-test-2/?object=%22'{}'%22&test=%22'{}'%22#'".format(
             object_path_key, test),
         shell=True)
     subprocess.check_call(
-        "\curl 'https://yfidnyb622.execute-api.ap-northeast-2.amazonaws.com/test/efs-test-2/?object=%22'{}'%22&test=%22'{}'%22#'".format(
+        "\curl 'https://yfidnyb622.execute-api.ap-northeast-2.amazonaws.com/test/s3-aug-test/?object=%22'{}'%22&test=%22'{}'%22#'".format(
             object_path_key, test),
         shell=True)
 
@@ -24,7 +24,6 @@ def make_topic(test, object_path_key):
 ret_arr = []
 num = 0
 
-result_bucket.objects.all().delete()
 
 threads = []
 for bucket_object in bucket.objects.all():

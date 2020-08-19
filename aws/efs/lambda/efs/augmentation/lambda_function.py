@@ -113,16 +113,16 @@ def sharpen(image, file_name):
 
 
 functions = [
-    blur,
-    contour,
+    # blur,
+    # contour,
     flip_lr,
     flip_tb,
     gray_scale,
-    resized,
+    # resized,
     rotate90,
     rotate180,
-    rotate270,
-    sharpen
+    # rotate270,
+    # sharpen
 ]
 
 
@@ -136,6 +136,15 @@ def augmentation(file_name, img):
     for t in return_file:
         t.join()
     return return_file
+
+
+def write_image_to_efs(img, key):
+    img.save(key)
+
+
+def remove_image(key):
+    rm = subprocess.Popen(['rm', '-rf', key])
+    rm.communicate()
 
 
 def lambda_handler(event, context):
@@ -153,16 +162,25 @@ def lambda_handler(event, context):
     augmentation(object_path, image)
     augmentation_time = time.time() - augmentation_start
     upload_start = time.time()
+    u_t = []
     for r in return_path:
-        r[0].save(r[1])
-    upload_time = time.time() - upload_start
-    for r in return_path:
-        rm = subprocess.Popen(['rm', '-rf', r[1]])
-        rm.communicate()
-    dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
-    table = dynamodb.Table('aug2')
+        t = Thread(target=write_image_to_efs, args=(r[0], r[1]))
+        t.start()
+        u_t.append(t)
+    for t in u_t:
+        t.join()
 
-    response = table.put_item(
+    upload_time = time.time() - upload_start
+
+    r_t = []
+
+    for r in return_path:
+        remove_image(r[1])
+
+    dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
+    table = dynamodb.Table('aug')
+
+    table.put_item(
         Item={
             'id': decimal.Decimal(time.time()),
             'type': 'efs',
@@ -171,10 +189,12 @@ def lambda_handler(event, context):
             'download_time': decimal.Decimal(download_time),
             'augmentation_time': decimal.Decimal(augmentation_time),
             'upload_time': decimal.Decimal(upload_time),
+            'test': event['test'],
         }
     )
 
     return (
+        'type: efs',
         'download_time: ', download_time,
         'upload_time: ', upload_time
     )
