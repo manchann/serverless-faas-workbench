@@ -161,16 +161,15 @@ def lambda_handler(event, context):
     augmentation_start = time.time()
     augmentation(object_path, image)
     augmentation_time = time.time() - augmentation_start
-    upload_start = time.time()
-    u_t = []
-    for r in return_path:
-        t = Thread(target=write_image_to_efs, args=(r[0], r[1]))
-        t.start()
-        u_t.append(t)
-    for t in u_t:
-        t.join()
 
-    upload_time = time.time() - upload_start
+    u_t = []
+
+    for r in return_path:
+        upload_start = time.time()
+        write_image_to_efs(r[0], r[1])
+        upload_time = time.time() - upload_start
+        u_t.append(upload_time)
+
 
     r_t = []
 
@@ -187,8 +186,12 @@ def lambda_handler(event, context):
             'second_type': 'aug',
             'name': event['object'],
             'download_time': decimal.Decimal(download_time),
+            'upload_time1': decimal.Decimal(u_t[0]),
+            'upload_time2': decimal.Decimal(u_t[1]),
+            'upload_time3': decimal.Decimal(u_t[2]),
+            'upload_time4': decimal.Decimal(u_t[3]),
+            'upload_time5': decimal.Decimal(u_t[4]),
             'augmentation_time': decimal.Decimal(augmentation_time),
-            'upload_time': decimal.Decimal(upload_time),
             'test': event['test'],
         }
     )
@@ -196,5 +199,9 @@ def lambda_handler(event, context):
     return (
         'type: efs',
         'download_time: ', download_time,
-        'upload_time: ', upload_time
+        'upload_time1: ', u_t[0],
+        'upload_time2: ', u_t[1],
+        'upload_time3: ', u_t[2],
+        'upload_time4: ', u_t[3],
+        'upload_time5: ', u_t[4],
     )

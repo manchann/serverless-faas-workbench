@@ -4,10 +4,13 @@ import time
 import json
 import decimal
 from threading import Thread
-import os
+from io import BytesIO
 import subprocess
 
-TMP = '/mnt/efs/'
+# import numpy as np
+
+region_name = 'ap-northeast-2'
+TMP = "/tmp/"
 mnt_test = '/mnt/efs/'
 
 return_path = []
@@ -24,110 +27,109 @@ class DecimalEncoder(json.JSONEncoder):
 
 
 def blur(image, file_name):
-    path = TMP + "blur-" + file_name
+    path = mnt_test + "blur-" + file_name
     image = image.convert('RGB')
     img = image.filter(ImageFilter.BLUR)
-    img.save(path)
-    return_path.append(path.split('/')[3])
+    # img.save(path)
+    return_path.append((img, path))
     return [path]
 
 
 def contour(image, file_name):
-    path = TMP + "contour-" + file_name
+    path = mnt_test + "contour-" + file_name
     image = image.convert('RGB')
     img = image.filter(ImageFilter.CONTOUR)
-    img.save(path)
-    return_path.append(path.split('/')[3])
+    # img.save(path)
+    return_path.append((img, path))
     return [path]
 
 
 def flip_lr(image, file_name):
-    path = TMP + "flip-left-right-" + file_name
+    path = mnt_test + "flip-left-right-" + file_name
     img = image.transpose(Image.FLIP_LEFT_RIGHT)
-    img.save(path)
-    return_path.append(path.split('/')[3])
+    # img.save(path)
+    return_path.append((img, path))
     return [path]
 
 
 def flip_tb(image, file_name):
-    path = TMP + "flip-top-bottom-" + file_name
+    path = mnt_test + "flip-top-bottom-" + file_name
     img = image.transpose(Image.FLIP_TOP_BOTTOM)
-    img.save(path)
-    return_path.append(path.split('/')[3])
+    # img.save(path)
+    return_path.append((img, path))
     return [path]
 
 
 def gray_scale(image, file_name):
-    path = TMP + "gray-scale-" + file_name
+    path = mnt_test + "gray-scale-" + file_name
     image = image.convert('RGB')
     img = image.convert('L')
-    img.save(path)
-    return_path.append(path.split('/')[3])
+    # img.save(path)
+    return_path.append((img, path))
     return [path]
 
 
 def resized(image, file_name):
-    path = TMP + "resized-" + file_name
-    image.thumbnail((128, 128))
-    image.save(path)
-    return_path.append(path.split('/')[2])
+    path = mnt_test + "resized-" + file_name
+    img = image.resize((32, 32))
+    # image.save(path)
+    return_path.append((img, path))
     return [path]
 
 
 def rotate90(image, file_name):
-    path = TMP + "rotate-90-" + file_name
+    path = mnt_test + "rotate-90-" + file_name
     img = image.transpose(Image.ROTATE_90)
-    img.save(path)
-    return_path.append(path.split('/')[3])
+    # img.save(path)
+    return_path.append((img, path))
 
     return [path]
 
 
 def rotate180(image, file_name):
-    path = TMP + "rotate-180-" + file_name
+    path = mnt_test + "rotate-180-" + file_name
     img = image.transpose(Image.ROTATE_180)
-    img.save(path)
-    return_path.append(path.split('/')[3])
+    # img.save(path)
+    return_path.append((img, path))
 
     return [path]
 
 
 def rotate270(image, file_name):
-    path = TMP + "rotate-270-" + file_name
+    path = mnt_test + "rotate-270-" + file_name
     img = image.transpose(Image.ROTATE_270)
-    img.save(path)
-    return_path.append(path.split('/')[3])
+    # img.save(path)
+    return_path.append((img, path))
     return [path]
 
 
 def sharpen(image, file_name):
-    path = TMP + "sharpen-" + file_name
+    path = mnt_test + "sharpen-" + file_name
     image = image.convert('RGB')
     img = image.filter(ImageFilter.SHARPEN)
-    img.save(path)
-    return_path.append(path.split('/')[3])
+    # img.save(path)
+    return_path.append((img, path))
     return [path]
 
 
 functions = [
-    blur,
-    contour,
+    # blur,
+    # contour,
     flip_lr,
     flip_tb,
     gray_scale,
-    resized,
+    # resized,
     rotate90,
     rotate180,
-    rotate270,
-    sharpen
+    # rotate270,
+    # sharpen
 ]
 
 
-def augmentation(file_name, image_path):
+def augmentation(file_name, img):
     return_file = []
     for f in functions:
-        image = Image.open(image_path)
-        t = Thread(target=f, args=(image, file_name))
+        t = Thread(target=f, args=(img, file_name))
         t.start()
         return_file.append(t)
 
@@ -136,31 +138,61 @@ def augmentation(file_name, image_path):
     return return_file
 
 
+def write_image_to_efs(img, key):
+    img.save(key)
+
+
+def remove_image(key):
+    rm = subprocess.Popen(['rm', '-rf', key])
+    rm.communicate()
+
+
 def lambda_handler(event, context):
-    p = mnt_test + '0/'
-    file_list = os.listdir(p)
-    tmp = p + file_list[0]
+    object_path = event['object']
+
+    p = mnt_test + 'aug/'
+
+    data_path = p + object_path
+    s3 = boto3.client('s3')
+
     download_start = time.time()
-
+    image = Image.open(data_path)
     download_time = time.time() - download_start
-
-    augmentation(file_list[0], tmp)
-    print(return_path)
     upload_start = time.time()
+    u_t = []
+    return_path.append((image, mnt_test + "1-" + object_path))
+    return_path.append((image, mnt_test + "2-" + object_path))
+    return_path.append((image, mnt_test + "3-" + object_path))
+    return_path.append((image, mnt_test + "4-" + object_path))
+    return_path.append((image, mnt_test + "5-" + object_path))
     for r in return_path:
-        text = open(p+r, 'w')
+        t = Thread(target=write_image_to_efs, args=(r[0], r[1]))
+        t.start()
+        u_t.append(t)
+    for t in u_t:
+        t.join()
+
     upload_time = time.time() - upload_start
 
-    dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
-    table = dynamodb.Table('EFS')
+    r_t = []
 
-    response = table.put_item(
+    dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-2')
+    table = dynamodb.Table('aug')
+
+    table.put_item(
         Item={
             'id': decimal.Decimal(time.time()),
             'type': 'efs',
+            'second_type': 'aug',
+            'name': event['object'],
             'download_time': decimal.Decimal(download_time),
             'upload_time': decimal.Decimal(upload_time),
+            'test': event['test'],
         }
     )
-    print('download_time: ', download_time)
-    print('upload_time: ', upload_time)
+
+    return (
+        'type: efs',
+        'download_time: ', download_time,
+        'upload_time: ', upload_time
+    )
