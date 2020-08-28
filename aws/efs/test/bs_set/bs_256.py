@@ -36,35 +36,35 @@ test_set3 = [
 ]
 
 bs_50 = [
-    {'bs': '50', 'fs': '200', 'test': 'test3'},
-    {'bs': '50', 'fs': '200', 'test': 'test3'},
-    {'bs': '50', 'fs': '200', 'test': 'test3'},
-    {'bs': '50', 'fs': '200', 'test': 'test3'},
-    {'bs': '50', 'fs': '200', 'test': 'test3'},
+    {'bs': '50', 'fs': '200', 'test': 'test3', 'count': '4096'},
+    {'bs': '50', 'fs': '200', 'test': 'test3', 'count': '4096'},
+    {'bs': '50', 'fs': '200', 'test': 'test3', 'count': '4096'},
+    {'bs': '50', 'fs': '200', 'test': 'test3', 'count': '4096'},
+    {'bs': '50', 'fs': '200', 'test': 'test3', 'count': '4096'},
 ]
 
 bs_256 = [
-    {'bs': '256', 'fs': '200', 'test': 'test3'},
-    {'bs': '256', 'fs': '200', 'test': 'test3'},
-    {'bs': '256', 'fs': '200', 'test': 'test3'},
-    {'bs': '256', 'fs': '200', 'test': 'test3'},
-    {'bs': '256', 'fs': '200', 'test': 'test3'},
+    {'bs': '256', 'fs': '200', 'test': 'test3', 'count': '800'},
+    {'bs': '256', 'fs': '200', 'test': 'test3', 'count': '800'},
+    {'bs': '256', 'fs': '200', 'test': 'test3', 'count': '800'},
+    {'bs': '256', 'fs': '200', 'test': 'test3', 'count': '800'},
+    {'bs': '256', 'fs': '200', 'test': 'test3', 'count': '800'},
 ]
 
 bs_1024 = [
-    {'bs': '1024', 'fs': '200', 'test': 'test3'},
-    {'bs': '1024', 'fs': '200', 'test': 'test3'},
-    {'bs': '1024', 'fs': '200', 'test': 'test3'},
-    {'bs': '1024', 'fs': '200', 'test': 'test3'},
-    {'bs': '1024', 'fs': '200', 'test': 'test3'},
+    {'bs': '1024', 'fs': '200', 'test': 'test3', 'count': '200'},
+    {'bs': '1024', 'fs': '200', 'test': 'test3', 'count': '200'},
+    {'bs': '1024', 'fs': '200', 'test': 'test3', 'count': '200'},
+    {'bs': '1024', 'fs': '200', 'test': 'test3', 'count': '200'},
+    {'bs': '1024', 'fs': '200', 'test': 'test3', 'count': '200'},
 ]
 
 bs_2048 = [
-    {'bs': '2048', 'fs': '200', 'test': 'test3'},
-    {'bs': '2048', 'fs': '200', 'test': 'test3'},
-    {'bs': '2048', 'fs': '200', 'test': 'test3'},
-    {'bs': '2048', 'fs': '200', 'test': 'test3'},
-    {'bs': '2048', 'fs': '200', 'test': 'test3'},
+    {'bs': '2048', 'fs': '200', 'test': 'test3', 'count': '100'},
+    {'bs': '2048', 'fs': '200', 'test': 'test3', 'count': '100'},
+    {'bs': '2048', 'fs': '200', 'test': 'test3', 'count': '100'},
+    {'bs': '2048', 'fs': '200', 'test': 'test3', 'count': '100'},
+    {'bs': '2048', 'fs': '200', 'test': 'test3', 'count': '100'},
 ]
 
 # efs scalablity testset

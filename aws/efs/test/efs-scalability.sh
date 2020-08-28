@@ -2,7 +2,7 @@
 
 lambda_memory="512"
 
-lambda_functions="random-write sequence-write"
+lambda_functions="random-write sequence-write random-read sequence-read dd"
 bs_set="1MB" #1MB 1KB
 efs_scale="1 10 20 50 100 200"
 
@@ -23,5 +23,5 @@ for lm in $lambda_memory; do
       done
     done
   done
-  sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh EFS /Users/manchan/Desktop/BigDataLab/Papers/efs-scalability-seq-$lm-$bs
+  sh /Users/manchan/Desktop/programming/serverless-faas-workbench/aws/dynamodb/dynamodb_export_json.sh EFS /Users/manchan/Desktop/BigDataLab/Papers/efs-scalability-$lm-$bs
 done
