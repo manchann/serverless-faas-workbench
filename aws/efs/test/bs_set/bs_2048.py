@@ -3,14 +3,14 @@ import time
 from threading import Thread
 
 
-def requester(bs, fs, test):
+def requester(bs, fs, test, count):
     subprocess.check_call(
         "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/efs-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
-            bs, fs, test, '0'),
+            bs, fs, test, count),
         shell=True)
     subprocess.check_call(
         "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/tmp-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
-            bs, fs, test, '0'),
+            bs, fs, test, count),
         shell=True)
 
 
@@ -97,7 +97,7 @@ efs_strong200 = [
 
 threads_2 = []
 for obj in bs_2048:
-    t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test']))
+    t = Thread(target=requester, args=(obj['bs'], obj['fs'], obj['test'], obj['count']))
     t.start()
     threads_2.append(t)
 for t in threads_2:
