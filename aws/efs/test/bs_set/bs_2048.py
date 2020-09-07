@@ -61,10 +61,6 @@ bs_1024 = [
 
 bs_2048 = [
     {'bs': '2048', 'fs': '200', 'test': 'test3', 'count': '100'},
-    {'bs': '2048', 'fs': '200', 'test': 'test3', 'count': '100'},
-    {'bs': '2048', 'fs': '200', 'test': 'test3', 'count': '100'},
-    {'bs': '2048', 'fs': '200', 'test': 'test3', 'count': '100'},
-    {'bs': '2048', 'fs': '200', 'test': 'test3', 'count': '100'},
 ]
 
 # efs scalablity testset

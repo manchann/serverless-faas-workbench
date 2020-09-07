@@ -30,7 +30,7 @@ def lambda_handler(event, context):
         bs = 'bs=' + str(b)
         count = 'count=' + event['count']
         out_fd = open(mnt_test + 'io_write_logs', 'w')
-        dd = subprocess.Popen(['dd', 'if=/dev/zero', 'of=/mnt/efs/out', bs, count], stderr=out_fd)
+        dd = subprocess.Popen(['dd', 'if=/mnt/efs/read_file', 'of=/mnt/efs/out', bs, count], stderr=out_fd)
         dd.communicate()
         # subprocess.check_output(['ls', '-alh', mnt_test])
 

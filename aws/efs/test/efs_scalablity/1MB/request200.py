@@ -5,9 +5,9 @@ from threading import Thread
 
 def requester(bs, fs, test, count):
     subprocess.check_call(
-        "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/efs-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
-            bs, fs, test, count),
-        shell=True)
+            "\curl 'https://t0kwmhsnvb.execute-api.ap-northeast-2.amazonaws.com/test/test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
+                bs, fs, test, '0'),
+            shell=True)
     # subprocess.check_call(
     #     "\curl 'https://oma3z82y67.execute-api.ap-northeast-2.amazonaws.com/version1/tmp-test/?bs=%22'{}'%22&fs=%22'{}'%22&test=%22'{}'%22&count=%22'{}'%22#'".format(
     #         bs, fs, test, '0'),
@@ -60,7 +60,7 @@ efs_strong100 = [
 efs_strong200 = [
     {'bs': '1024', 'fs': '200', 'test': 'efs_strong200', 'scale': 200, 'count': 200},
 ]
-
+#
 threads_1 = []
 for obj in efs_strong200:
     for i in range(obj['scale']):
@@ -69,6 +69,12 @@ for obj in efs_strong200:
         threads_1.append(t)
     for t in threads_1:
         t.join()
+
+#
+# threads_1 = []
+# for obj in efs_strong200:
+#     for i in range(obj['scale']):
+#         requester(obj['bs'],obj['fs'],obj['test'],obj['count'])
 
 # threads_2 = []
 # for obj in test_set1:

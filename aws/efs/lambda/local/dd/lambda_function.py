@@ -28,14 +28,15 @@ def lambda_handler(event, context):
         b = str(int(event['bs']) * 1024)
         bs = 'bs=' + b
         count = 'count=' + event['count']
+        output = str(time.time())
+        out_fd = open(tmp + output, 'w')
 
-        out_fd = open(tmp + 'io_write_logs', 'w')
-        dd = subprocess.Popen(['dd', 'if=/dev/zero', 'of=/tmp/out', bs, count], stderr=out_fd)
+        dd = subprocess.Popen(['dd', 'if=/opt/read_file', 'of=/tmp/out2', bs, count], stderr=out_fd)
         dd.communicate()
 
         subprocess.check_output(['ls', '-alh', tmp])
 
-        with open(tmp + 'io_write_logs') as logs:
+        with open(tmp + output) as logs:
             result = str(logs.readlines()[2]).replace('\n', '')
             end = time.time()
             print('test', end - start)

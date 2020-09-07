@@ -37,10 +37,6 @@ test_set3 = [
 
 bs_50 = [
     {'bs': '50', 'fs': '200', 'test': 'test3', 'count': '4096'},
-    {'bs': '50', 'fs': '200', 'test': 'test3', 'count': '4096'},
-    {'bs': '50', 'fs': '200', 'test': 'test3', 'count': '4096'},
-    {'bs': '50', 'fs': '200', 'test': 'test3', 'count': '4096'},
-    {'bs': '50', 'fs': '200', 'test': 'test3', 'count': '4096'},
 ]
 
 bs_256 = [
