@@ -1,5 +1,5 @@
 {
-  "scriptFile": "rw.py",
+  "scriptFile": "dd.py",
   "bindings": [
     {
       "authLevel": "function",
@@ -17,5 +17,21 @@
       "direction": "out",
       "name": "$return"
     }
+//    {
+//      "type": "cosmosDB",
+//      "direction": "out",
+//      "name": "doc",
+//      "databaseName": "testdb",
+//      "collectionName": "data",
+//      "createIfNotExists": "true",
+//      "connectionStringSetting": "function-storage"
+//    }
+//    {
+//      "type": "table",
+//      "name": "instanceIds",
+//      "tableName": "HttpLoadTestInstanceIds",
+//      "connection": "StorageConnectionString",
+//      "direction": "out"
+//    }
   ]
 }

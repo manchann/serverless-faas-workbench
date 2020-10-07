@@ -8,7 +8,7 @@ import os
 import random
 
 tmp = '/tmp/'
-mnt_test = '/ap/'
+mnt_test = '/tmp/'
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     try:

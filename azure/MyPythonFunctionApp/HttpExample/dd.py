@@ -1,7 +1,7 @@
 import logging
 
 import azure.functions as func
-
+from opencensus.ext.azure.log_exporter import AzureLogHandler
 from time import time
 import subprocess
 import os
@@ -10,21 +10,33 @@ import random
 tmp = '/tmp/'
 mnt_test = '/ap/'
 
+
 def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
+        logger = logging.getLogger(__name__)
+        logger.addHandler(AzureLogHandler(
+            connection_string='InstrumentationKey=468aaf92-e505-456a-8869-2ba7616741dc')
+        )
+
+        start = time()
         b = int(req.route_params.get('bs')) * 1024
 
         bs = 'bs=' + str(b)
         count = 'count=' + req.route_params.get('count')
         out_fd = open(mnt_test + 'io_write_logs', 'w')
-        dd = subprocess.Popen(['dd', 'if=/ap/read_file', 'of=/ap/out', bs, count], stderr=out_fd)
+        dd = subprocess.Popen(['dd', 'if=/dev/zero', 'of=/tmp/out', bs, count], stderr=out_fd)
         dd.communicate()
+        end = time()
         # subprocess.check_output(['ls', '-alh', mnt_test])
 
         with open(mnt_test + 'io_write_logs') as logs:
             result = str(logs.readlines()[2]).replace('\n', '')
-        return result + "\n"
+        res = {
+            'result': result,
+            'start': str(start),
+            'end': str(end)
+        }
+        logger.info(result)
+        return result + "\n" + str(start) + "\n" + str(end) + "\n"
     except Exception as ex:
-        return str(ex)
-    
-
+        return str(ex) + "\n"

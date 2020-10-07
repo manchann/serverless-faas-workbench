@@ -2,3 +2,5 @@
 
 azure-functions
 requests==2.19.1
+opencensus-ext-azure
+opencensus

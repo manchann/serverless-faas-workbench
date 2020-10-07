@@ -2,10 +2,9 @@ import subprocess
 import time
 from threading import Thread
 
-
 def requester(bs, count):
     subprocess.check_call(
-        "\curl 'https://jgfuncrandom.azurewebsites.net/api/HttpExample/{}/{}?code=XiKx1zPlLSsS2cimGbKIfzjGPOygEV5xbxtIoFGFvoF55M0ldaNkdQ=='".format(
+        "\curl 'https://jgfunc1.azurewebsites.net/api/HttpExample/{}/{}?code=fId/1q5pPpbKvyQa6CCJBVRi50CgHLxvfX2Mwxk0uLNAg2BgflNwiA=='".format(
             bs, count),
         shell=True)
 
