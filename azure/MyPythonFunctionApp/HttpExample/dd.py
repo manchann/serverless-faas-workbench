@@ -10,6 +10,9 @@ import random
 tmp = '/tmp/'
 mnt_test = '/ap/'
 
+readfile = 'readfile'
+out_path = 'out/'
+
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
@@ -24,7 +27,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         bs = 'bs=' + str(b)
         count = 'count=' + req.route_params.get('count')
         out_fd = open(mnt_test + 'io_write_logs', 'w')
-        dd = subprocess.Popen(['dd', 'if=/ap/out', 'of=/ap/' + str(time.time()), bs, count], stderr=out_fd)
+        dd = subprocess.Popen(
+            ['dd', 'if=' + mnt_test + readfile, 'of=' + mnt_test + out_path + str(time.time()), bs, count],
+            stderr=out_fd)
         dd.communicate()
         end = time.time()
         # subprocess.check_output(['ls', '-alh', mnt_test])

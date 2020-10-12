@@ -1,0 +1,1 @@
+dd if=/dev/zero of=/mnt/jgfileshare1/readfile bs=1024 count=204800
