@@ -10,7 +10,7 @@
         "get",
         "post"
       ],
-      "route": "HttpExample/{bs}/{count}/{scale}/"
+      "route": "HttpExample/{bs}/{count}/{scale}/{test}"
     },
     {
       "type": "http",

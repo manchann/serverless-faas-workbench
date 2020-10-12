@@ -11,7 +11,7 @@ tmp = '/tmp/'
 mnt_test = '/ap/'
 
 
-def main(req: func.HttpRequest, doc: func.Out[func.Document]) -> func.HttpResponse:
+def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
         start = time.time()
         print(start)
