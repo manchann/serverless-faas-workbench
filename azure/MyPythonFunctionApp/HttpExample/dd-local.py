@@ -7,12 +7,13 @@ import time
 import subprocess
 import os
 import random
+import tempfile
 
 tmp = '/tmp/'
-mnt_test = '/ap/'
+mnt_test = '/tmp/'
 
 readfile = 'readfile'
-out_path = 'out/'
+out_path = '/out/'
 
 
 async def main(req: func.HttpRequest) -> func.HttpResponse:
@@ -21,7 +22,7 @@ async def main(req: func.HttpRequest) -> func.HttpResponse:
         # logger.addHandler(AzureLogHandler(
         #     connection_string='InstrumentationKey=468aaf92-e505-456a-8869-2ba7616741dc')
         # )
-
+        local_path = tempfile.gettempdir()
         start = time.time()
         b = int(req.route_params.get('bs')) * 1024
 
@@ -29,7 +30,7 @@ async def main(req: func.HttpRequest) -> func.HttpResponse:
         count = 'count=' + req.route_params.get('count')
         out_fd = open(mnt_test + 'io_write_logs', 'w')
         dd = subprocess.Popen(
-            ['dd', 'if=' + mnt_test + readfile, 'of=' + mnt_test + out_path + str(time.time()), bs, count],
+            ['dd', 'if=/dev/zero', 'of=/tmp/out'+str(time.time()), bs, count],
             stderr=out_fd)
         dd.communicate()
         end = time.time()
@@ -37,6 +38,7 @@ async def main(req: func.HttpRequest) -> func.HttpResponse:
 
         with open(mnt_test + 'io_write_logs') as logs:
             result = str(logs.readlines()[2]).replace('\n', '')
+            latency = result.split(',')[2]
         res = {
             'test': str(req.route_params.get('test')),
             'result': result,
@@ -46,6 +48,6 @@ async def main(req: func.HttpRequest) -> func.HttpResponse:
         }
         # res = json.dumps(res)
         logging.info(json.dumps(res))
-        return result + " scale: " + str(res['scale']) + "\n"
+        return result + " scale: " + str(res['scale']) + " latency:"+ latency + "\n"
     except Exception as ex:
         return str(ex) + "\n"

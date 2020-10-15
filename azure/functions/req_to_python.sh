@@ -9,6 +9,6 @@ for bs in $bs_set; do
   for es in $efs_scale; do
     echo $newline'---------------' $es '개 진행중 -----------------'$newline
     python3 ./$bs/request$es.py
-    sleep 5
+    sleep 3
   done
 done

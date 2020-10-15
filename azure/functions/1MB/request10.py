@@ -5,8 +5,8 @@ from threading import Thread
 
 def requester(bs, count):
     subprocess.check_call(
-        "\curl 'https://jgfunc1.azurewebsites.net/api/HttpExample/{}/{}?code=fId/1q5pPpbKvyQa6CCJBVRi50CgHLxvfX2Mwxk0uLNAg2BgflNwiA=='".format(
-            bs, count),
+        "\curl 'https://jgfunc.azurewebsites.net/api/httpexample/{}/{}/{}/{}?code=tRkE7ZKLwuOWlB4/MDIkfh8a/lblE/fBpHZ1Tpkd6FRPYGfVHwcWsA=='".format(
+            bs, count, '10', 'test-python2'),
         shell=True)
 
 # fs(MB) if fs = 1 -> 1MB

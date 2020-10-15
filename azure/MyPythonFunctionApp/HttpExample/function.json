@@ -1,5 +1,5 @@
 {
-  "scriptFile": "dd.py",
+  "scriptFile": "dd-local.py",
   "bindings": [
     {
       "authLevel": "function",

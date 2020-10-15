@@ -4,7 +4,7 @@ lambda_memory="512"
 
 lambda_functions="random-read random-write sequence-read sequence-write dd"
 bs_set="1MB" #1MB 1KB
-efs_scale="1"
+efs_scale="1 10"
 
 for lm in $lambda_memory; do
   #remove dynamodb datas

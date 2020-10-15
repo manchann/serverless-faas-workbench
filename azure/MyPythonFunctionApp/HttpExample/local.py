@@ -11,7 +11,7 @@ tmp = '/tmp/'
 mnt_test = '/ap/'
 
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
+async def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
         start = time.time()
         print(start)
